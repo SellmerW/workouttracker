@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="nl"><head><meta charset="utf-8"><title>WorkoutTracker</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="WorkoutTracker">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" sizes="180x180" href="icon.png?v=1">
+<style>
+:root{--bg:#f6f7f7;--c:#fff;--t:#1c2124;--m:#7b858a;--a:#2f8f8a;--l:#e3e7e8}
+@media(prefers-color-scheme:dark){:root{--bg:#111415;--c:#1b1f21;--t:#eceff0;--m:#8a9499;--a:#4fb3ad;--l:#2a3033}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--t);font:15px -apple-system,system-ui,sans-serif;touch-action:pan-x pan-y}
+#v{max-width:480px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 8px) 14px calc(40px + env(safe-area-inset-bottom))}
+#hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;font-size:18px}
+#hd button{border:0;background:none;color:var(--m);padding:6px 8px;font-size:20px;margin:0;display:inline-flex}
+#hd button:first-child:not(:only-child){font-size:15px}
+#tb{position:fixed;left:0;bottom:0;height:3px;width:0;background:var(--a);z-index:9;pointer-events:none}
+button,select,input,textarea{font:inherit;color:var(--t)}
+button{background:var(--c);border:1px solid var(--l);border-radius:999px;padding:8px 14px;margin:2px 0}
+button.p{background:var(--a);border-color:var(--a);color:#fff}
+input,select,textarea{background:var(--c);border:1px solid var(--l);border-radius:12px;padding:8px 10px;min-width:0}
+input[type=checkbox]{width:auto}
+textarea{width:100%;margin-top:6px;height:44px}
+.card{background:var(--c);border:1px solid var(--l);border-radius:18px;padding:14px;margin:10px 0}
+.m,small{color:var(--m);font-size:13px}
+.row{display:flex;gap:8px;align-items:center;margin:6px 0;flex-wrap:wrap}
+.row input:not([type=checkbox]):not(.n){flex:1}
+.n{width:64px}
+.seg{display:flex;margin-bottom:10px;background:var(--l);padding:3px;border-radius:999px}.seg button{flex:1;border:0;background:none;margin:0;color:var(--m)}.seg button.on{background:var(--c);color:var(--t);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.set{display:flex;gap:6px;align-items:center;margin:6px 0}.set input{width:30%;flex:1}.set span{width:14px;color:var(--m)}
+.set i{width:54px;font-style:normal;color:var(--a);font-size:12px;font-weight:600}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center}
+.d{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:400}.d.td{background:var(--l);font-weight:700}.d.on{background:var(--a);color:#fff}.d.sel{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--t)}.gr{stroke:var(--l);stroke-width:1}.ax{stroke:var(--m);stroke-width:1;opacity:.5}
+.bars{display:flex;gap:6px;align-items:flex-end;height:140px}.bars div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;text-align:center}
+.bars u{width:100%;background:var(--a);border-radius:4px 4px 0 0;min-height:1px}
+.bar{height:8px;background:var(--a);border-radius:4px}
+.eq{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:8px 0}
+.ln{fill:none;stroke:var(--a);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}.dt{fill:var(--a)}svg text{fill:var(--m)}.fl{display:inline-flex;align-items:center;gap:2px;color:var(--a);font-size:16px;font-weight:600;margin-right:6px}.fl.z{color:var(--m)}#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--t);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:10}</style></head><body>
+<div id="v"></div><div id="tb"></div><div id="toast"></div>
+<script>
+const K='workout-v1';
+// namen uit de vorige versie (alleen voor het omzetten van oude gegevens)
+const OLD='Bankdrukken|Halter bankdrukken|Incline halterpers|Halter flyes|Push-ups|Chest press machine|Kabel flyes|Optrekken|Lat pulldown|Roeien met barbell|Halter roeien|Zittend kabel roeien|Deadlift|Face pull|Schouderpers met halters|Overhead press|Zijwaarts heffen|Reverse fly|Biceps curl|Barbell curl|Hammer curl|Triceps pushdown|Skullcrushers|Overhead triceps extension|Kniebuigen|Goblet squat|Beenpers|Leg extension|Leg curl|Lunges|Roemeense deadlift|Hip thrust|Kuitheffen|Plank|Crunch|Hanging knee raise|Cable crunch'.split('|');
+const OLDBW=['Push-ups','Optrekken','Kuitheffen','Hanging knee raise'];
+var S,V='t',sub='k',st='c',mo=0,ed=null,sx={},T=0;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ds=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const key=n=>String(n||'').trim().toLowerCase();
+var sd=ds(new Date());
+function norm(o){o=Object.assign({routines:[],log:[],cur:null,set:{}},o||{});o.set=Object.assign({rest:90,bw:''},o.set);
+ const cu=o.custom||[],nm=id=>/^e\d+$/.test(id)?(OLD[+id.slice(1)]||id):((cu.find(x=>x.id==id)||{}).nl||id),fx=e=>{if(!e.n){e.n=nm(e.id);delete e.id}};
+ o.routines.forEach(r=>r.ex.forEach(fx));o.log.forEach(l=>l.ex.forEach(fx));if(o.cur)o.cur.ex.forEach(fx);
+ if(!o.bwk){o.bwk={};OLDBW.forEach(n=>o.bwk[key(n)]=true)}delete o.custom;return o}
+function load(){let o;try{o=JSON.parse(localStorage.getItem(K))}catch(e){}S=norm(o)}
+function save(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
+const G=()=>S.gyms[S.gym]||S.gyms[0];
+const vol=(e,s)=>((+s.kg||0)+(S.bwk[key(e.n)]?(+S.set.bw||0):0))*(+s.r||0);
+const e1=(k,r)=>k>0&&r>0?(r==1?k:k*(1+r/30)):0;
+function prev(n){const k=key(n);for(let i=S.log.length-1;i>=0;i--){const e=S.log[i].ex.find(e=>key(e.n)==k);if(e&&e.sets.length)return e.sets}return null}
+function best(n){const q=key(n);let k=0,e=0;S.log.forEach(l=>l.ex.forEach(x=>{if(key(x.n)==q)x.sets.forEach(s=>{k=Math.max(k,+s.kg||0);e=Math.max(e,e1(+s.kg,+s.r))})}));return{k,e}}
+function pr(n,s){const b=best(n);if(!b.k)return'';const k=+s.kg,r=+s.r;if(k>b.k)return'PR';if(e1(k,r)>b.e+.01)return'PR 1RM';return''}
+function names(){const m={};S.routines.forEach(r=>r.ex.forEach(e=>e.n&&(m[key(e.n)]=e.n)));S.log.forEach(l=>l.ex.forEach(e=>m[key(e.n)]=e.n));return Object.values(m)}
+const FL='<svg width=18 height=18 viewBox="0 0 24 24" fill=currentColor><path d="M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-2.5 1.2-4 2.5-5 .3 2 1 3 2 3.2C11.500 8 10.800 5 12 2z"/></svg>';
+const IC='<svg width=22 height=22 viewBox="0 0 24 24" fill=none stroke=currentColor stroke-width=2 stroke-linecap=round><path d="M5 20V11M12 20V4M19 20v-6"/></svg>';
+function R(){
+ if(V!='i')sx.p=0;const sk=streak();
+ const hd=V=='t'?`<div id=hd><b>Training</b><span><span class="fl ${sk?'':'z'}">${FL}${sk}</span><button onclick="V='s';R()" aria-label="Statistieken">${IC}</button><button onclick="V='i';R()" aria-label="Instellingen">⚙︎</button></span></div>`:`<div id=hd><button onclick="V='t';R()">‹ Terug</button><b>${V=='s'?'Statistieken':'Instellingen'}</b><span style="width:60px"></span></div>`;
+ $('#v').innerHTML=hd+(V=='t'?vT():V=='s'?vS():vI())+`<datalist id=dl>${names().map(n=>`<option value="${esc(n)}">`).join('')}</datalist>`;
+}
+/* TRAINING */
+function vT(){
+ const seg=`<div class=seg><button class="${sub=='k'?'on':''}" onclick="sub='k';R()">Kracht</button><button class="${sub=='c'?'on':''}" onclick="sub='c';R()">Cardio</button></div>`;
+ if(sub=='c')return seg+'<p class=m>Cardio volgt later.</p>';
+ if(ed)return seg+vE();
+ if(S.cur)return seg+vC();
+ return seg+S.routines.map((r,i)=>`<div class=card><b>${esc(r.n)}</b><div class=m>${r.ex.length} oefeningen</div><div class=row><button class=p onclick="go(${i})">Start</button><button onclick="edit(${i})">Wijzig</button><button onclick="cf('r${i}',()=>{S.routines.splice(${i},1);save()})">${cl('r'+i,'Verwijder')}</button></div></div>`).join('')+`<button class=p onclick="edit(-1)">Nieuwe routine</button>`;
+}
+function vC(){
+ return S.cur.ex.map((e,i)=>{const p=prev(e.n),b=best(e.n);
+  return `<div class=card><div class=row>${e.n?`<b style="flex:1">${esc(e.n)}</b>`:`<input list=dl placeholder="Naam oefening" onchange="S.cur.ex[${i}].n=this.value.trim();save();R()">`}<label class=m><input type=checkbox ${S.bwk[key(e.n)]?'checked':''} onchange="tbw(${i})"> + lichaamsgewicht</label></div>
+  ${b.k?`<div class=m>Record: ${b.k} kg · geschat 1RM ${Math.round(b.e)} kg</div>`:''}
+  ${p?`<div class=m>Vorige keer: ${p.map(s=>(s.kg||0)+' kg × '+s.r).join(' · ')}</div>`:''}
+  ${e.sets.map((s,j)=>{const q=p&&(p[j]||p[p.length-1])||{};return `<div class=set><span>${j+1}</span><input type=number inputmode=decimal placeholder="${esc(q.kg||'kg')}" value="${esc(s.kg)}" oninput="us(${i},${j},'kg',this.value)"><input type=number inputmode=numeric placeholder="${esc(q.r||'reps')}" value="${esc(s.r)}" oninput="us(${i},${j},'r',this.value)"><input type=number inputmode=decimal placeholder="RPE" value="${esc(s.rpe)}" oninput="us(${i},${j},'rpe',this.value)"><i id=p${i}_${j}>${pr(e.n,s)}</i></div>`}).join('')}
+  <button onclick="S.cur.ex[${i}].sets.push({kg:'',r:'',rpe:''});save();R()">+ set</button>
+  <textarea placeholder="Notitie" oninput="S.cur.ex[${i}].note=this.value;save()">${esc(e.note)}</textarea></div>`}).join('')+`<button onclick=ae()>+ Oefening</button><div class=row><button class=p onclick=fin()>Training opslaan</button><button onclick="cf('cur',()=>{S.cur=null;save()})">${cl('cur','Annuleren')}</button></div>`;
+}
+function tbw(i){const k=key(S.cur.ex[i].n);S.bwk[k]=!S.bwk[k];save()}
+function ae(){S.cur.ex.push({n:'',note:'',sets:[{kg:'',r:'',rpe:''},{kg:'',r:'',rpe:''},{kg:'',r:'',rpe:''}]});save();R()}
+function us(i,j,f,v){const s=S.cur.ex[i].sets[j];s[f]=v;save();if(f!='rpe'&&+s.r>0)startT();const el=document.getElementById('p'+i+'_'+j);if(el)el.textContent=pr(S.cur.ex[i].n,s)}
+function go(i){const r=S.routines[i];S.cur={rt:r.n,ex:r.ex.map(e=>({n:e.n,note:'',sets:Array.from({length:e.sets},()=>({kg:'',r:'',rpe:''}))}))};save();R()}
+function fin(){const ex=S.cur.ex.map(e=>({n:e.n,note:e.note,sets:e.sets.filter(s=>+s.r>0)})).filter(e=>e.sets.length&&e.n);
+ if(!ex.length){tz('Vul minstens één set in.');return}
+ S.log.push({d:ds(new Date()),rt:S.cur.rt,ex});S.cur=null;save();R()}
+function edit(i){ed=i<0?{i:-1,n:'',ex:[{n:'',sets:3}]}:{i,n:S.routines[i].n,ex:JSON.parse(JSON.stringify(S.routines[i].ex))};R()}
+function vE(){
+ return `<input style="width:100%" placeholder="Naam routine" value="${esc(ed.n)}" oninput="ed.n=this.value"><div class=card>`+ed.ex.map((e,i)=>`<div class=row><input list=dl placeholder="Naam oefening" value="${esc(e.n)}" oninput="ed.ex[${i}].n=this.value"><input class=n type=number value=${e.sets} onchange="ed.ex[${i}].sets=Math.max(1,Math.min(10,+this.value||3))"><span class=m>sets</span><button onclick="ed.ex.splice(${i},1);R()">✕</button></div>`).join('')+`<button onclick="ed.ex.push({n:'',sets:3});R()">+ Oefening</button></div><div class=row><button class=p onclick=sr()>Opslaan</button><button onclick="ed=null;R()">Annuleren</button></div>`;
+}
+function sr(){const ex=ed.ex.map(e=>({n:e.n.trim(),sets:e.sets})).filter(e=>e.n);
+ if(!ed.n.trim()||!ex.length){tz('Geef een naam en vul minstens één oefening in.');return}
+ const r={n:ed.n.trim(),ex};if(ed.i<0)S.routines.push(r);else S.routines[ed.i]=r;ed=null;save();R()}
+/* STATISTIEKEN */
+function vS(){return `<div class=seg>${[['c','Kalender'],['v','Volume'],['x','Per oefening']].map(([k,l])=>`<button class="${st==k?'on':''}" onclick="st='${k}';R()">${l}</button>`).join('')}</div>`+(st=='c'?cal():st=='v'?wk():pe())}
+function cal(){
+ const d=new Date();d.setDate(1);d.setMonth(d.getMonth()+mo);
+ const y=d.getFullYear(),m=d.getMonth(),n=new Date(y,m+1,0).getDate(),s=(d.getDay()+6)%7,days=new Set(S.log.map(l=>l.d));
+ let c=['Ma','Di','Wo','Do','Vr','Za','Zo'].map(x=>`<i class=m>${x}</i>`).join('')+'<i></i>'.repeat(s);
+ for(let i=1;i<=n;i++){const k=ds(new Date(y,m,i));c+=`<b class="d ${days.has(k)?'on':''} ${k==ds(new Date())?'td':''} ${k==sd?'sel':''}" onclick="sd='${k}';R()">${i}</b>`}
+ return `<div class=row><button onclick="mo--;R()">‹</button><span style="flex:1;text-align:center">${d.toLocaleDateString('nl-NL',{month:'long',year:'numeric'})}</span><button onclick="mo++;R()">›</button></div><div class=cal>${c}</div><p class=m>Gevuld = training · ring = geselecteerd · vet = vandaag</p>`+S.log.filter(l=>l.d==sd).map(l=>`<div class=card><b>${esc(l.rt||'Training')}</b> <span class=m>${l.d}</span>${l.ex.map(e=>`<div class=m>${esc(e.n)}: ${e.sets.map(t=>(t.kg||0)+'×'+t.r).join(', ')}</div>`).join('')}</div>`).join('');
+}
+function mon(d){const r=new Date(d);r.setHours(12);r.setDate(r.getDate()-(r.getDay()+6)%7);return r}
+function fd(d){return +d.slice(8)+'/'+ +d.slice(5,7)}
+function ln(p){
+ if(!p.length)return'<p class=m>Nog geen trainingen opgeslagen.</p>';
+ const W=320,H=165,L=38,Q=10,Tp=12,B=26,mx=Math.max(1,...p.map(z=>z.v)),x=i=>p.length<2?(L+W-Q)/2:L+i*(W-L-Q)/(p.length-1),y=v=>Tp+(H-Tp-B)*(1-v/mx);
+ const g=[0,.5,1].map(f=>`<line class=${f?'gr':'ax'} x1="${L}" x2="${W-Q}" y1="${y(mx*f).toFixed(1)}" y2="${y(mx*f).toFixed(1)}"/><text x="${L-6}" y="${(y(mx*f)+3).toFixed(1)}" font-size="9" text-anchor="end">${Math.round(mx*f)}</text>`).join('');
+ return `<svg viewBox="0 0 ${W} ${H}" width="100%">${g}<line class=ax x1="${L}" x2="${L}" y1="${Tp}" y2="${y(0).toFixed(1)}"/><path class=ln d="${p.map((z,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(z.v).toFixed(1)).join('')}"/>${p.map((z,i)=>`<circle class=dt cx="${x(i).toFixed(1)}" cy="${y(z.v).toFixed(1)}" r="3.5"/>`).join('')}<text x="${L}" y="${H-8}" font-size="10">${p[0].l}</text><text x="${W-Q}" y="${H-8}" font-size="10" text-anchor="end">${p[p.length-1].l}</text></svg>`}
+function wk(){
+ const m={};S.log.forEach(l=>{const k=sx.vm=='w'?ds(mon(new Date(l.d+'T12:00'))):l.d;m[k]=(m[k]||0)+l.ex.reduce((a,e)=>a+e.sets.reduce((b,s)=>b+vol(e,s),0),0)});
+ let p=Object.keys(m).sort().map(k=>({l:fd(k),v:m[k]})).slice(-20);
+ if(sx.vm=='w'){p=[];const t=mon(new Date());for(let i=11;i>=0;i--){const w=new Date(t);w.setDate(w.getDate()-7*i);const k=ds(w);p.push({l:fd(k),v:m[k]||0})}}
+ return `<div class=seg><button class="${sx.vm=='w'?'':'on'}" onclick="sx.vm='d';R()">Per dag</button><button class="${sx.vm=='w'?'on':''}" onclick="sx.vm='w';R()">Per week</button></div><p class=m>Volume per ${sx.vm=='w'?'week':'trainingsdag'} (kg × reps)</p>`+ln(p)}
+function pe(){const m={};S.log.forEach(l=>l.ex.forEach(e=>m[key(e.n)]=e.n));const ks=Object.keys(m);if(!ks.length)return'<p class=m>Nog geen trainingen opgeslagen.</p>';
+ const k=ks.includes(sx.e)?sx.e:ks[0],b=best(m[k]);
+ const r=S.log.map(l=>{const e=l.ex.find(e=>key(e.n)==k);return e&&[l.d,Math.max(0,...e.sets.map(s=>+s.kg||0)),e.sets.reduce((a,s)=>a+vol(e,s),0)]}).filter(Boolean).slice(-20);
+ return `<select style="width:100%" onchange="sx.e=this.value;R()">${ks.map(i=>`<option value="${esc(i)}" ${i==k?'selected':''}>${esc(m[i])}</option>`).join('')}</select><p><b>PR:</b> ${b.k} kg &nbsp; <b>PR 1RM:</b> ${Math.round(b.e)} kg <span class=m>(geschat)</span></p><p class=m>Volume per training (kg × reps)</p>`+ln(r.map(z=>({l:fd(z[0]),v:z[2]})))+r.slice(-6).reverse().map(z=>`<div class=m>${fd(z[0])} · top ${z[1]} kg · volume ${Math.round(z[2])}</div>`).join('')}
+/* INSTELLINGEN */
+function vI(){return `<div class=card><div class=row>Rusttimer (sec) <input class=n type=number value=${S.set.rest} oninput="S.set.rest=+this.value||0;save()"></div><div class=row>Lichaamsgewicht (kg) <input class=n type=number value="${esc(S.set.bw)}" oninput="S.set.bw=this.value;save()"></div><p class=m>Wordt bij het volume opgeteld voor oefeningen waar je "+ lichaamsgewicht" aanvinkt.</p></div><div class=card><div class=row><button onclick=bk()>Kopieer back-up</button><button onclick=rs()>${sx.p?'Zeker weten?':'Plak back-up'}</button></div><textarea id=bt placeholder="Of plak hier je back-up"></textarea><p class=m id=msg></p></div>`}
+const msg=t=>{const m=$('#msg');if(m)m.textContent=t};
+async function bk(){const t=JSON.stringify(S),b=$('#bt');b.value=t;try{await navigator.clipboard.writeText(t);msg('Gekopieerd naar klembord.')}catch(e){b.select();msg('Kopieer de tekst hierboven handmatig.')}}
+async function rs(){
+ if(sx.p){S=norm(sx.p);sx.p=0;save();R();msg('Hersteld.');return}
+ let t=$('#bt').value;if(!t.trim()){try{t=await navigator.clipboard.readText()}catch(e){}}
+ try{const d=JSON.parse(t);if(!Array.isArray(d.log))throw 0;sx.p=d;R();msg('Tik nogmaals om de huidige gegevens te vervangen.')}catch(e){msg('Geen geldige back-up gevonden.')}}
+function cf(k,fn){if(sx.c==k){sx.c=0;fn()}else{sx.c=k;setTimeout(()=>{if(sx.c==k){sx.c=0;R()}},3000)}R()}
+const cl=(k,t)=>sx.c==k?'Zeker weten?':t;
+function tz(t){const e=$('#toast');e.textContent=t;e.style.opacity=1;setTimeout(()=>e.style.opacity=0,2500)}
+function streak(){const ws=new Set(S.log.map(l=>ds(mon(new Date(l.d+'T12:00')))));let w=mon(new Date());if(!ws.has(ds(w)))w.setDate(w.getDate()-7);let n=0;while(ws.has(ds(w))){n++;w.setDate(w.getDate()-7)}return n}
+/* RUSTTIMER */
+function startT(){if(S.set.rest>0){T=Date.now()+S.set.rest*1000;tick()}}
+function tick(){const r=T-Date.now();$('#tb').style.width=r>0&&S.set.rest>0?(r/(S.set.rest*1000)*100)+'%':'0'}
+setInterval(tick,250);
+['gesturestart','gesturechange','gestureend'].forEach(e=>document.addEventListener(e,ev=>ev.preventDefault()));
+load();R();
+</script></body></html>
