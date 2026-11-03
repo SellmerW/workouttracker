@@ -30,7 +30,7 @@ textarea{width:100%;margin-top:6px;height:44px}
 .set{display:flex;gap:6px;align-items:center;margin:6px 0}.set input{width:30%;flex:1}.set span{width:14px;color:var(--m)}
 .set i{width:54px;font-style:normal;color:var(--a);font-size:12px;font-weight:600}
 .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center}
-.d{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:400}.d.td{background:var(--l);font-weight:700}.d.on{background:var(--a);color:#fff}.d.sel{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--t)}.gr{stroke:var(--l);stroke-width:1}.ax{stroke:var(--m);stroke-width:1;opacity:.5}
+.d small{font-size:9px;color:inherit;opacity:.85}.d{flex-direction:column;line-height:1.15;aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:400}.d.pl{border:1.5px dashed var(--a);color:var(--a)}.d.td{background:var(--l);font-weight:700}.d.on{background:var(--a);color:#fff}.d.sel{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--t)}.gr{stroke:var(--l);stroke-width:1}.ax{stroke:var(--m);stroke-width:1;opacity:.5}
 .bars{display:flex;gap:6px;align-items:flex-end;height:140px}.bars div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;text-align:center}
 .bars u{width:100%;background:var(--a);border-radius:4px 4px 0 0;min-height:1px}
 .bar{height:8px;background:var(--a);border-radius:4px}
@@ -42,13 +42,13 @@ const K='workout-v1';
 // namen uit de vorige versie (alleen voor het omzetten van oude gegevens)
 const OLD='Bankdrukken|Halter bankdrukken|Incline halterpers|Halter flyes|Push-ups|Chest press machine|Kabel flyes|Optrekken|Lat pulldown|Roeien met barbell|Halter roeien|Zittend kabel roeien|Deadlift|Face pull|Schouderpers met halters|Overhead press|Zijwaarts heffen|Reverse fly|Biceps curl|Barbell curl|Hammer curl|Triceps pushdown|Skullcrushers|Overhead triceps extension|Kniebuigen|Goblet squat|Beenpers|Leg extension|Leg curl|Lunges|Roemeense deadlift|Hip thrust|Kuitheffen|Plank|Crunch|Hanging knee raise|Cable crunch'.split('|');
 const OLDBW=['Push-ups','Optrekken','Kuitheffen','Hanging knee raise'];
-var S,V='t',sub='k',st='c',mo=0,ed=null,sx={},T=0;
+var S,V='t',sub='k',st='c',mo=0,mo2=0,ed=null,sx={},T=0;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const ds=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const key=n=>String(n||'').trim().toLowerCase();
 var sd=ds(new Date());
-function norm(o){o=Object.assign({routines:[],log:[],cur:null,set:{}},o||{});o.set=Object.assign({rest:90,bw:''},o.set);
+function norm(o){o=Object.assign({routines:[],log:[],cur:null,set:{}},o||{});o.set=Object.assign({rest:90,bw:''},o.set);o.plan=Object.assign({d:[0,2,4],g:1,r:[],i:0,m:'dyn'},o.plan);o.routines.forEach((r,k)=>{if(!r.id)r.id='r'+Date.now().toString(36)+k});
  const cu=o.custom||[],nm=id=>/^e\d+$/.test(id)?(OLD[+id.slice(1)]||id):((cu.find(x=>x.id==id)||{}).nl||id),fx=e=>{if(!e.n){e.n=nm(e.id);delete e.id}};
  o.routines.forEach(r=>r.ex.forEach(fx));o.log.forEach(l=>l.ex.forEach(fx));if(o.cur)o.cur.ex.forEach(fx);
  if(!o.bwk){o.bwk={};OLDBW.forEach(n=>o.bwk[key(n)]=true)}delete o.custom;return o}
@@ -65,18 +65,20 @@ const FL='<svg width=18 height=18 viewBox="0 0 24 24" fill=currentColor><path d=
 const IC='<svg width=22 height=22 viewBox="0 0 24 24" fill=none stroke=currentColor stroke-width=2 stroke-linecap=round><path d="M5 20V11M12 20V4M19 20v-6"/></svg>';
 function R(){
  if(V!='i')sx.p=0;const sk=streak();
- const hd=V=='t'?`<div id=hd><b>Training</b><span><span class="fl ${sk?'':'z'}">${FL}${sk}</span><button onclick="V='s';R()" aria-label="Statistieken">${IC}</button><button onclick="V='i';R()" aria-label="Instellingen">⚙︎</button></span></div>`:`<div id=hd><button onclick="V='t';R()">‹ Terug</button><b>${V=='s'?'Statistieken':'Instellingen'}</b><span style="width:60px"></span></div>`;
- $('#v').innerHTML=hd+(V=='t'?vT():V=='s'?vS():vI())+`<datalist id=dl>${names().map(n=>`<option value="${esc(n)}">`).join('')}</datalist>`;
+ const hd=V=='t'?`<div id=hd><b>Training</b><span><span class="fl ${sk?'':'z'}">${FL}${sk}</span><button onclick="V='s';R()" aria-label="Statistieken">${IC}</button><button onclick="V='i';R()" aria-label="Instellingen">⚙︎</button></span></div>`:`<div id=hd><button onclick="V='t';R()">‹ Terug</button><b>${{s:'Statistieken',i:'Instellingen',p:'Schema',h:'Hardloopschema',o:'Planning'}[V]}</b><span style="width:60px"></span></div>`;
+ $('#v').innerHTML=hd+(V=='t'?vT():V=='s'?vS():V=='p'?vP():V=='h'?vH():V=='o'?vO():vI())+`<datalist id=dl>${names().map(n=>`<option value="${esc(n)}">`).join('')}</datalist>`;
 }
 /* TRAINING */
 function vT(){
+ if(S.cur)sub=S.cur.t=='c'?'c':'k';
  const seg=`<div class=seg><button class="${sub=='k'?'on':''}" onclick="sub='k';R()">Kracht</button><button class="${sub=='c'?'on':''}" onclick="sub='c';R()">Cardio</button></div>`;
- if(sub=='c')return seg+'<p class=m>Cardio volgt later.</p>';
  if(ed)return seg+vE();
  if(S.cur)return seg+vC();
- return seg+S.routines.map((r,i)=>`<div class=card><b>${esc(r.n)}</b><div class=m>${r.ex.length} oefeningen</div><div class=row><button class=p onclick="go(${i})">Start</button><button onclick="edit(${i})">Wijzig</button><button onclick="cf('r${i}',()=>{S.routines.splice(${i},1);save()})">${cl('r'+i,'Verwijder')}</button></div></div>`).join('')+`<button class=p onclick="edit(-1)">Nieuwe routine</button>`;
+ if(sub=='c')return pc()+seg+rc()+S.routines.map((r,i)=>r.t!='c'?'':`<div class=card><b>${esc(r.n)}</b><div class=m>Cardio</div><div class=row><button class=p onclick="go(${i})">Start</button><button onclick="edit(${i})">Wijzig</button><button onclick="cf('r${i}',()=>{S.routines.splice(${i},1);save()})">${cl('r'+i,'Verwijder')}</button></div></div>`).join('')+cu()+`<button class=p onclick="edit(-1,'c')">Nieuwe cardio</button>`;
+ return pc()+seg+S.routines.map((r,i)=>r.t=='c'?'':`<div class=card><b>${esc(r.n)}</b><div class=m>${r.ex.length} oefeningen</div><div class=row><button class=p onclick="go(${i})">Start</button><button onclick="edit(${i})">Wijzig</button><button onclick="cf('r${i}',()=>{S.routines.splice(${i},1);save()})">${cl('r'+i,'Verwijder')}</button></div></div>`).join('')+`<button class=p onclick="edit(-1)">Nieuwe routine</button>`;
 }
 function vC(){
+ if(S.cur.t=='c')return vK();
  return S.cur.ex.map((e,i)=>{const p=prev(e.n),b=best(e.n);
   return `<div class=card><div class=row>${e.n?`<b style="flex:1">${esc(e.n)}</b>`:`<input list=dl placeholder="Naam oefening" onchange="S.cur.ex[${i}].n=this.value.trim();save();R()">`}<label class=m><input type=checkbox ${S.bwk[key(e.n)]?'checked':''} onchange="tbw(${i})"> + lichaamsgewicht</label></div>
   ${b.k?`<div class=m>Record: ${b.k} kg · geschat 1RM ${Math.round(b.e)} kg</div>`:''}
@@ -88,25 +90,26 @@ function vC(){
 function tbw(i){const k=key(S.cur.ex[i].n);S.bwk[k]=!S.bwk[k];save()}
 function ae(){S.cur.ex.push({n:'',note:'',sets:[{kg:'',r:'',rpe:''},{kg:'',r:'',rpe:''},{kg:'',r:'',rpe:''}]});save();R()}
 function us(i,j,f,v){const s=S.cur.ex[i].sets[j];s[f]=v;save();if(f!='rpe'&&+s.r>0)startT();const el=document.getElementById('p'+i+'_'+j);if(el)el.textContent=pr(S.cur.ex[i].n,s)}
-function go(i){const r=S.routines[i];S.cur={rt:r.n,ex:r.ex.map(e=>({n:e.n,note:'',sets:Array.from({length:e.sets},()=>({kg:'',r:'',rpe:''}))}))};save();R()}
+function go(i){const r=S.routines[i];S.cur={rt:r.n,rid:r.id,t:r.t,c:{min:'',km:'',rpe:'',note:''},ex:r.ex.map(e=>({n:e.n,note:'',sets:Array.from({length:e.sets},()=>({kg:'',r:'',rpe:''}))}))};save();R()}
 function fin(){const ex=S.cur.ex.map(e=>({n:e.n,note:e.note,sets:e.sets.filter(s=>+s.r>0)})).filter(e=>e.sets.length&&e.n);
  if(!ex.length){tz('Vul minstens één set in.');return}
- S.log.push({d:ds(new Date()),rt:S.cur.rt,ex});S.cur=null;save();R()}
-function edit(i){ed=i<0?{i:-1,n:'',ex:[{n:'',sets:3}]}:{i,n:S.routines[i].n,ex:JSON.parse(JSON.stringify(S.routines[i].ex))};R()}
+ const RR=rot(),ix=RR.indexOf(S.cur.rid);if(ix>=0)S.plan.i=(ix+1)%RR.length;S.log.push({d:ds(new Date()),rt:S.cur.rt,rid:S.cur.rid,ex});S.cur=null;save();R()}
+function edit(i,t){ed=i<0?{i:-1,n:'',t,ex:t=='c'?[]:[{n:'',sets:3}]}:{i,n:S.routines[i].n,t:S.routines[i].t,ex:JSON.parse(JSON.stringify(S.routines[i].ex))};R()}
 function vE(){
+ if(ed.t=='c')return `<input style="width:100%" placeholder="Naam cardio (bijv. Hardlopen)" value="${esc(ed.n)}" oninput="ed.n=this.value"><div class=row><button class=p onclick=sr()>Opslaan</button><button onclick="ed=null;R()">Annuleren</button></div>`;
  return `<input style="width:100%" placeholder="Naam routine" value="${esc(ed.n)}" oninput="ed.n=this.value"><div class=card>`+ed.ex.map((e,i)=>`<div class=row><input list=dl placeholder="Naam oefening" value="${esc(e.n)}" oninput="ed.ex[${i}].n=this.value"><input class=n type=number value=${e.sets} onchange="ed.ex[${i}].sets=Math.max(1,Math.min(10,+this.value||3))"><span class=m>sets</span><button onclick="ed.ex.splice(${i},1);R()">✕</button></div>`).join('')+`<button onclick="ed.ex.push({n:'',sets:3});R()">+ Oefening</button></div><div class=row><button class=p onclick=sr()>Opslaan</button><button onclick="ed=null;R()">Annuleren</button></div>`;
 }
 function sr(){const ex=ed.ex.map(e=>({n:e.n.trim(),sets:e.sets})).filter(e=>e.n);
- if(!ed.n.trim()||!ex.length){tz('Geef een naam en vul minstens één oefening in.');return}
- const r={n:ed.n.trim(),ex};if(ed.i<0)S.routines.push(r);else S.routines[ed.i]=r;ed=null;save();R()}
+ if(!ed.n.trim()||(!ex.length&&ed.t!='c')){tz('Geef een naam en vul minstens één oefening in.');return}
+ const r={n:ed.n.trim(),ex,t:ed.t,id:ed.i<0?'r'+Date.now().toString(36):S.routines[ed.i].id};if(ed.i<0)S.routines.push(r);else S.routines[ed.i]=r;ed=null;save();R()}
 /* STATISTIEKEN */
 function vS(){return `<div class=seg>${[['c','Kalender'],['v','Volume'],['x','Per oefening']].map(([k,l])=>`<button class="${st==k?'on':''}" onclick="st='${k}';R()">${l}</button>`).join('')}</div>`+(st=='c'?cal():st=='v'?wk():pe())}
 function cal(){
  const d=new Date();d.setDate(1);d.setMonth(d.getMonth()+mo);
- const y=d.getFullYear(),m=d.getMonth(),n=new Date(y,m+1,0).getDate(),s=(d.getDay()+6)%7,days=new Set(S.log.map(l=>l.d));
+ const y=d.getFullYear(),m=d.getMonth(),n=new Date(y,m+1,0).getDate(),s=(d.getDay()+6)%7,days=new Set(S.log.map(l=>l.d)),pm={};sched(40).forEach(q=>pm[ds(q.d)]=q.r.n);
  let c=['Ma','Di','Wo','Do','Vr','Za','Zo'].map(x=>`<i class=m>${x}</i>`).join('')+'<i></i>'.repeat(s);
- for(let i=1;i<=n;i++){const k=ds(new Date(y,m,i));c+=`<b class="d ${days.has(k)?'on':''} ${k==ds(new Date())?'td':''} ${k==sd?'sel':''}" onclick="sd='${k}';R()">${i}</b>`}
- return `<div class=row><button onclick="mo--;R()">‹</button><span style="flex:1;text-align:center">${d.toLocaleDateString('nl-NL',{month:'long',year:'numeric'})}</span><button onclick="mo++;R()">›</button></div><div class=cal>${c}</div><p class=m>Gevuld = training · ring = geselecteerd · vet = vandaag</p>`+S.log.filter(l=>l.d==sd).map(l=>`<div class=card><b>${esc(l.rt||'Training')}</b> <span class=m>${l.d}</span>${l.ex.map(e=>`<div class=m>${esc(e.n)}: ${e.sets.map(t=>(t.kg||0)+'×'+t.r).join(', ')}</div>`).join('')}</div>`).join('');
+ for(let i=1;i<=n;i++){const k=ds(new Date(y,m,i));c+=`<b class="d ${days.has(k)?'on':''} ${k==ds(new Date())?'td':''} ${k==sd?'sel':''} ${pm[k]&&!days.has(k)?'pl':''}" onclick="sd='${k}';R()">${i}</b>`}
+ return `<div class=row><button onclick="mo--;R()">‹</button><span style="flex:1;text-align:center">${d.toLocaleDateString('nl-NL',{month:'long',year:'numeric'})}</span><button onclick="mo++;R()">›</button></div><div class=cal>${c}</div><p class=m>Gevuld = training · streep = gepland · ring = geselecteerd · vet = vandaag</p>`+(pm[sd]&&!days.has(sd)?`<div class=card><span class=m>Gepland</span> <b>${esc(pm[sd])}</b></div>`:'')+S.log.filter(l=>l.d==sd).map(l=>`<div class=card><b>${esc(l.rt||'Training')}</b> <span class=m>${l.d}</span>${l.ex.map(e=>`<div class=m>${esc(e.n)}: ${e.sets.map(t=>(t.kg||0)+'×'+t.r).join(', ')}</div>`).join('')}${l.c?`<div class=m>${l.c.min||0} min${l.c.km?' · '+l.c.km+' km':''}${l.c.rpe?' · RPE '+l.c.rpe:''}${l.c.note?' · '+esc(l.c.note):''}</div>`:''}</div>`).join('');
 }
 function mon(d){const r=new Date(d);r.setHours(12);r.setDate(r.getDate()-(r.getDay()+6)%7);return r}
 function fd(d){return +d.slice(8)+'/'+ +d.slice(5,7)}
@@ -116,7 +119,7 @@ function ln(p){
  const g=[0,.5,1].map(f=>`<line class=${f?'gr':'ax'} x1="${L}" x2="${W-Q}" y1="${y(mx*f).toFixed(1)}" y2="${y(mx*f).toFixed(1)}"/><text x="${L-6}" y="${(y(mx*f)+3).toFixed(1)}" font-size="9" text-anchor="end">${Math.round(mx*f)}</text>`).join('');
  return `<svg viewBox="0 0 ${W} ${H}" width="100%">${g}<line class=ax x1="${L}" x2="${L}" y1="${Tp}" y2="${y(0).toFixed(1)}"/><path class=ln d="${p.map((z,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(z.v).toFixed(1)).join('')}"/>${p.map((z,i)=>`<circle class=dt cx="${x(i).toFixed(1)}" cy="${y(z.v).toFixed(1)}" r="3.5"/>`).join('')}<text x="${L}" y="${H-8}" font-size="10">${p[0].l}</text><text x="${W-Q}" y="${H-8}" font-size="10" text-anchor="end">${p[p.length-1].l}</text></svg>`}
 function wk(){
- const m={};S.log.forEach(l=>{const k=sx.vm=='w'?ds(mon(new Date(l.d+'T12:00'))):l.d;m[k]=(m[k]||0)+l.ex.reduce((a,e)=>a+e.sets.reduce((b,s)=>b+vol(e,s),0),0)});
+ const m={};S.log.forEach(l=>{if(!l.ex.length)return;const k=sx.vm=='w'?ds(mon(new Date(l.d+'T12:00'))):l.d;m[k]=(m[k]||0)+l.ex.reduce((a,e)=>a+e.sets.reduce((b,s)=>b+vol(e,s),0),0)});
  let p=Object.keys(m).sort().map(k=>({l:fd(k),v:m[k]})).slice(-20);
  if(sx.vm=='w'){p=[];const t=mon(new Date());for(let i=11;i>=0;i--){const w=new Date(t);w.setDate(w.getDate()-7*i);const k=ds(w);p.push({l:fd(k),v:m[k]||0})}}
  return `<div class=seg><button class="${sx.vm=='w'?'':'on'}" onclick="sx.vm='d';R()">Per dag</button><button class="${sx.vm=='w'?'on':''}" onclick="sx.vm='w';R()">Per week</button></div><p class=m>Volume per ${sx.vm=='w'?'week':'trainingsdag'} (kg × reps)</p>`+ln(p)}
@@ -136,10 +139,120 @@ function cf(k,fn){if(sx.c==k){sx.c=0;fn()}else{sx.c=k;setTimeout(()=>{if(sx.c==k
 const cl=(k,t)=>sx.c==k?'Zeker weten?':t;
 function tz(t){const e=$('#toast');e.textContent=t;e.style.opacity=1;setTimeout(()=>e.style.opacity=0,2500)}
 function streak(){const ws=new Set(S.log.map(l=>ds(mon(new Date(l.d+'T12:00')))));let w=mon(new Date());if(!ws.has(ds(w)))w.setDate(w.getDate()-7);let n=0;while(ws.has(ds(w))){n++;w.setDate(w.getDate()-7)}return n}
+/* SCHEMA */
+const rot=()=>S.plan.r.filter(id=>S.routines.some(r=>r.id==id));
+const cgv=()=>S.plan.gc==null?(+S.plan.g||0):+S.plan.gc;
+function cg(v){S.plan.gc=Math.max(0,Math.min(14,+v||0));save();R()}
+function sched(n){
+ const P=S.plan,fx=P.m=='fix',rp=S.rp,ON=!!(rp&&P.rp),gs=+P.g||0,gc=cgv(),cx=!!P.cx,ld=P.lead=='c';let left=ON?rp.list.length-rp.k:0;
+ const mk=(c,r)=>{const a=S.log.filter(l=>l.rid==r.id||(!l.rid&&l.rt==r.n)).map(l=>l.d).sort().reverse().slice(0,c);return Array.from({length:c},(_,j)=>({id:r.id,r,d:a[j]||''}))};
+ const sl=[],cl=[];rot().forEach(id=>{const r=S.routines.find(x=>x.id==id),c=(P.n||{})[id]||1;if(r.t=='c')cl.push(...mk(c,r));else if(P.st!==false)sl.push(...mk(c,r))});
+ if(!sl.length&&!cl.length&&!left)return[];
+ const D0=s=>new Date(s+'T12:00'),df=(a,b)=>Math.round((a-b)/864e5),mx=a=>a.reduce((m,l)=>l.d>m?l.d:m,''),since=(x,d)=>x?df(d,D0(x)):1e9;
+ const lo=f=>{const x=S.log.filter(f).reduce((a,l)=>l.d>=a.d?l:a,{d:''});return x.rid||''};
+ let lS=mx(S.log.filter(l=>!l.c)),lC=mx(S.log.filter(l=>l.c)),lR=mx(S.log.filter(l=>l.rp)),lA=lS>lC?lS:lC,pS=lo(l=>!l.c),pC=lo(l=>!!l.c);
+ const E=ON&&rp.date?D0(rp.date):null,E2=E&&new Date(E);if(E2)E2.setDate(E2.getDate()-(+rp.rest||0));
+ const t=new Date();t.setHours(12,0,0,0);const out=[];
+ for(let i=0;i<500&&out.length<n;i++){
+  const d=new Date(t);d.setDate(d.getDate()+i);const k=ds(d);
+  if(E&&left==0&&d>E2&&d<=E)continue;
+  const dl=E2?df(E2,d):0,sr=since(lR,d),gp=Math.max(gc+1,dl/Math.max(left,1)),ur=left>0&&E2?(left==1?Math.max(0,dl):Math.max(0,gp-sr)):99,blk=!cx&&ur>0&&ur<=gc;
+  const okS=sl.length&&!blk&&(!fx||P.d.includes((d.getDay()+6)%7))&&(cx?since(lS,d)>gs&&since(lA,d)>0:since(lA,d)>gs);
+  const okC=(cl.length||left>0)&&(cx?since(lC,d)>gc&&since(lA,d)>0:since(lA,d)>gc);
+  let run=false;
+  if(okC&&left>0)run=!E2?(!cl.length||lR<=cl.reduce((m,x)=>x.d<m?x.d:m,'~')):left==1?d>=E2:sr>=gp;
+  const cC=okC&&(run||cl.length>0),force=cC&&((E2&&run)||(lC?since(lC,d):i)>=2*(gc+1));
+  if(!okS&&!cC)continue;
+  if(cC&&(!okS||force||ld)){
+   if(run){const e=rp.list[rp.list.length-left];out.push({d,r:{n:(rp.n||'Hardlopen')+' · '+e.km+' km',run:1}});left--;lR=k;pC='run'}
+   else{let c=cl.filter(x=>x.id!=pC);if(!c.length)c=cl;const b=c.reduce((a,x)=>x.d<a.d?x:a,c[0]);b.d=k;out.push({d,r:b.r});pC=b.id}
+   lC=k}
+  else{let c=sl.filter(x=>x.id!=pS);if(!c.length)c=sl;const b=c.reduce((a,x)=>x.d<a.d?x:a,c[0]);b.d=k;out.push({d,r:b.r});pS=b.id;lS=k}
+  lA=k}
+ return out}
+const wl=d=>{const t=ds(new Date()),x=new Date();x.setDate(x.getDate()+1);return ds(d)==t?'Vandaag':ds(d)==ds(x)?'Morgen':d.toLocaleDateString('nl-NL',{weekday:'long',day:'numeric',month:'short'})};
+function pc(){if(!S.routines.length&&!S.rp)return'';const s=sched(2);
+ if(!s.length)return`<button onclick="V='p';R()">Schema instellen</button>`;
+ return `<div class=card><div class=m>Volgende training</div><div class=row><b style="flex:1;font-size:17px">${esc(s[0].r.n)}</b><span>${wl(s[0].d)}</span></div>${s[1]?`<div class=m>Daarna: ${esc(s[1].r.n)} · ${wl(s[1].d)}</div>`:''}<div class=row><button class=p onclick="${s[0].r.run?'gr()':'go('+S.routines.indexOf(s[0].r)+')'}">Start</button><button onclick="V='p';R()">Schema</button><button onclick="V='o';R()">Planning</button></div></div>`}
+function vP(){const p=S.plan,fx=p.m=='fix';
+ return `<div class=seg><button class="${fx?'':'on'}" onclick="pm2('dyn')">Dynamisch</button><button class="${fx?'on':''}" onclick="pm2('fix')">Vaste dagen</button></div><div class=card><div class=m>Meenemen in het schema</div><label class=row><input type=checkbox ${p.st!==false?'checked':''} onchange="S.plan.st=this.checked;save();R()"> Krachttraining</label>${S.rp?`<label class=row><input type=checkbox ${p.rp?'checked':''} onchange="S.plan.rp=this.checked;save();R()"> ${esc(S.rp.n||'Hardloopschema')}</label>${p.rp&&S.rp.date?`<div class=row>Laatste training <input class=n type=number min=0 max=14 value="${S.rp.rest||0}" oninput="S.rp.rest=Math.max(0,Math.min(14,+this.value||0));save()"> dagen voor de doeldatum</div>`:''}${p.rp&&!S.rp.date?'<p class=m>Geef het hardloopschema een doeldatum voor een eindpunt.</p>':''}`:'<p class=m>Maak op de Cardio-tab een hardloopschema om te combineren.</p>'}</div><div class=card>${fx?`<div class=m>Trainingsdagen</div><div class=row>${['Ma','Di','Wo','Do','Vr','Za','Zo'].map((x,i)=>`<button class="${p.d.includes(i)?'p':''}" onclick="pd(${i})">${x}</button>`).join('')}</div>`:''}<div class=row>Rustdagen tussen krachttrainingen <input class=n type=number min=0 max=6 value=${p.g} onchange="S.plan.g=Math.max(0,Math.min(6,+this.value||0));save();R()"></div><div class=row>Rustdagen tussen cardio <input class=n type=number min=0 max=14 value=${cgv()} onchange="cg(this.value)"></div><div class=row>Leidend bij overlap <span class=seg style="flex:1;margin:0"><button class="${p.lead=='c'?'':'on'}" onclick="S.plan.lead='s';save();R()">Kracht</button><button class="${p.lead=='c'?'on':''}" onclick="S.plan.lead='c';save();R()">Cardio</button></span></div><label class=row><input type=checkbox ${p.cx?'checked':''} onchange="S.plan.cx=this.checked;save();R()"> Cardio op rustdagen van kracht, en andersom</label><p class=m>Wil kracht én cardio dezelfde dag, dan krijgt het leidende type die dag en schuift de ander op. Uit: na elke training geldt de rust van het type dat daarna komt. Aan: cardio mag de dag na kracht (en andersom), maar nooit op dezelfde dag.</p><p class=m>${fx?'Vaste dagen gelden voor krachttraining. Rustdagen gaan voor de gekozen dagen. Sla je een dag over, dan schuift het schema door naar de eerstvolgende gekozen dag.':'Je geeft alleen je rustdagen aan. De volgende training komt na je laatste echte training, dus sla je een dag over, dan schuift alles mee.'} De routine die het langst niet is gedaan komt als eerste.</p></div><div class=card><div class=m>Routines, met hoe vaak per ronde</div>${S.routines.length?S.routines.map(r=>{const k=p.r.indexOf(r.id);return `<div class=row><label style="flex:1"><input type=checkbox ${k>=0?'checked':''} onchange="tr2('${r.id}')"> ${esc(r.n)}${r.t=='c'?' <span class=m>cardio</span>':''}</label>${k>=0?`<span class=m>×</span><input class=n type=number min=1 max=4 value=${(p.n&&p.n[r.id])||1} onchange="cn('${r.id}',this.value)">`:''}</div>`}).join(''):'<p class=m>Maak eerst een routine.</p>'}</div>`+(sched(6).length?`<div class=card><div class=m>Komende trainingen</div>${sched(6).map(s=>`<div class=row><span style="flex:1">${wl(s.d)}</span><b>${esc(s.r.n)}</b></div>`).join('')}</div>`:'')}
+function pm2(m){S.plan.m=m;save();R()}
+function pd(i){const d=S.plan.d,k=d.indexOf(i);k<0?d.push(i):d.splice(k,1);d.sort();save();R()}
+function tr2(id){const r=S.plan.r,k=r.indexOf(id);k<0?r.push(id):r.splice(k,1);save();R()}
+/* CARDIO */
+function lastC(id){for(let i=S.log.length-1;i>=0;i--)if(S.log[i].rid==id&&S.log[i].c)return S.log[i].c;return null}
+function vK(){const c=S.cur.c,p=lastC(S.cur.rid)||{};
+ return `<div class=card><b>${esc(S.cur.rt)}</b>${S.cur.rp?`<div class=m>Doel: ${esc(S.cur.tk)} km${S.cur.tn?' · '+esc(S.cur.tn):''}</div>`:''}${p.min?`<div class=m>Vorige keer: ${esc(p.min)} min${p.km?' · '+esc(p.km)+' km':''}</div>`:''}<div class=m>Duur (min) · afstand (km) · RPE</div><div class=set><input type=number inputmode=decimal placeholder="${esc(p.min||'min')}" value="${esc(c.min)}" oninput="uk('min',this.value)"><input type=number inputmode=decimal placeholder="${esc(S.cur.tk||p.km||'km')}" value="${esc(c.km)}" oninput="uk('km',this.value)"><input type=number inputmode=decimal placeholder="RPE" value="${esc(c.rpe)}" oninput="uk('rpe',this.value)"></div><textarea placeholder="Notitie" oninput="uk('note',this.value)">${esc(c.note)}</textarea></div><div class=row><button class=p onclick=finC()>Training opslaan</button><button onclick="cf('cur',()=>{S.cur=null;save()})">${cl('cur','Annuleren')}</button></div>`}
+function uk(f,v){S.cur.c[f]=v;save()}
+function finC(){const c=S.cur.c,w=S.cur.rp;if(!(+c.min>0)){tz('Vul de duur in.');return}
+ S.log.push({d:ds(new Date()),rt:S.cur.rt,rid:S.cur.rid,t:'c',c:{min:c.min,km:c.km,rpe:c.rpe,note:c.note},ex:[],rp:w?1:0});if(w&&S.rp){S.rp.k=Math.min(S.rp.k+1,S.rp.list.length);regen(true)}S.cur=null;save();R()}
+/* HARDLOOPSCHEMA */
+function rc(){const r=S.rp;
+ if(!r)return`<button onclick="S.rp={n:'',date:'',iv:3,k:0,list:[{km:5,note:''}],rest:2};save();V='h';R()">Hardloopschema maken</button>`;
+ const e=r.list[r.k];
+ return `<div class=card><b>${esc(r.n||'Hardloopschema')}</b><div class=m>${r.k}/${r.list.length} gedaan${r.date?' · tot '+fd(r.date):''}${S.plan.rp?'':' · niet in schema'}</div>${e?`<div class=row>Volgende: <b>${esc(e.km)} km</b> <span class=m>${esc(e.note)}</span></div><div class=row><button class=p onclick=gr()>Start</button><button onclick="V='h';R()">Wijzig</button>${S.plan.rp?'':`<button onclick="V='p';R()">Schema</button>`}</div>`:`<div class=row><span class=m>Schema afgerond</span><button onclick="V='h';R()">Wijzig</button></div>`}</div>`}
+function gr(){const r=S.rp,e=r&&r.list[r.k];if(!e)return;S.cur={rt:(r.n||'Hardlopen')+' · '+e.km+' km',rid:'run',t:'c',rp:1,tk:e.km,tn:e.note,c:{min:'',km:'',rpe:'',note:''},ex:[]};save();R()}
+function vH(){const r=S.rp;if(!r)return'';
+ return `<div class=card><input style="width:100%" placeholder="Naam (bijv. Halve marathon)" value="${esc(r.n)}" oninput="S.rp.n=this.value;save()"><div class=row>Doeldatum <input type=date value="${esc(r.date)}" onchange="S.rp.date=this.value;save();R()"></div><p class=m>${r.date?'De runs worden gelijkmatig verdeeld tot de doeldatum, tussen je andere trainingen door. De laatste run valt op je laatste trainingsdag voor de doeldatum (instelbaar bij Schema).':'Zonder doeldatum volgen de runs je rustdagen voor cardio (bij Schema of onder Cardio).'}</p></div>${vG()}<div class=card>${r.list.map((e,i)=>`<div class=row><span class=m style="width:22px">${i<r.k?'✓':i+1}</span><input class=n type=number inputmode=decimal value="${esc(e.km)}" oninput="S.rp.auto=0;S.rp.list[${i}].km=this.value;save()"><span class=m>km</span><input placeholder="notitie, bijv. 5×1 km interval" value="${esc(e.note)}" oninput="S.rp.auto=0;S.rp.list[${i}].note=this.value;save()"><button onclick="rl(${i})">✕</button></div>`).join('')}<div class=row><button onclick="ra(1)">+ Run</button></div><div class=row><input class=n type=number id=na value=5><span class=m>runs van</span><input class=n type=number id=nk value=5><span class=m>km</span><button onclick="ra()">Voeg toe</button></div></div>`+(sched(8).length?`<div class=card><div class=m>Komende trainingen</div>${sched(8).map(s=>`<div class=row><span style="flex:1">${wl(s.d)}</span><b>${esc(s.r.n)}</b></div>`).join('')}</div>`:'')+`<button onclick="cf('rp',()=>{S.rp=null;save();V='t'})">${cl('rp','Schema verwijderen')}</button>`}
+function rl(i){const r=S.rp;r.auto=0;r.list.splice(i,1);if(i<r.k)r.k--;save();R()}
+function ra(one){S.rp.auto=0;const r=S.rp,n=one?1:Math.max(1,Math.min(100,+$('#na').value||1)),k=one?(r.list.length?r.list[r.list.length-1].km:5):($('#nk').value||5);for(let i=0;i<n;i++)r.list.push({km:k,note:''});save();R()}
+function cn(id,v){S.plan.n=S.plan.n||{};S.plan.n[id]=Math.max(1,Math.min(4,+v||1));save()}
+function cu(){const a=sched(80).filter(x=>x.r.run||x.r.t=='c').slice(0,6);
+ return `<div class=card><div class=row>Rustdagen tussen cardio <input class=n type=number min=0 max=14 value=${cgv()} onchange="cg(this.value)"></div>${a.length?`<div class=m>Komende cardio</div>`+a.map(s=>`<div class=row><span style="flex:1">${wl(s.d)}</span><b>${esc(s.r.n)}</b></div>`).join(''):'<p class=m>Vink cardio of je hardloopschema aan bij Schema om te plannen.</p>'}</div>`}
+/* PLANNING */
+function vO(){
+ const d0=new Date();d0.setDate(1);d0.setMonth(d0.getMonth()+mo2);
+ const y=d0.getFullYear(),m=d0.getMonth(),n=new Date(y,m+1,0).getDate(),off=(d0.getDay()+6)%7,done=new Set(S.log.map(l=>l.d)),pl={},td=ds(new Date()),rd=S.rp&&S.plan.rp&&S.rp.date;
+ sched(150).forEach(q=>pl[ds(q.d)]=q.r);
+ let c=['Ma','Di','Wo','Do','Vr','Za','Zo'].map(x=>`<i class=m>${x}</i>`).join('')+'<i></i>'.repeat(off),ls='';
+ for(let i=1;i<=n;i++){const k=ds(new Date(y,m,i)),p=pl[k],L=p?(p.run?'H':p.t=='c'?'C':'K'):k==rd?'★':'',dn=new Date(y,m,i).toLocaleDateString('nl-NL',{weekday:'short',day:'numeric'});
+  c+=`<b class="d ${done.has(k)?'on':''} ${k==td?'td':''} ${p&&!done.has(k)?'pl':''}">${i}<small>${L}</small></b>`;
+  if(p)ls+=`<div class=row><span style="flex:1">${dn}</span><b>${esc(p.n)}</b></div>`;
+  if(k==rd)ls+=`<div class=row><span style="flex:1">${dn}</span><b>★ Doeldatum</b></div>`}
+ return `<div class=row><button onclick="mo2--;R()">‹</button><span style="flex:1;text-align:center">${d0.toLocaleDateString('nl-NL',{month:'long',year:'numeric'})}</span><button onclick="mo2++;R()">›</button></div><div class=cal>${c}</div><p class=m>K kracht · H hardlopen · C cardio · ★ doeldatum · gevuld = gedaan · streep = gepland</p>`+(ls?`<div class=card>${ls}</div>`:'<p class=m>Niets gepland in deze maand.</p>')}
+/* SCHEMA GENEREREN */
+function pp(s){s=String(s||'').replace(',','.');const m=s.match(/^(\d+):(\d{1,2})$/);return m?+m[1]*60+ +m[2]:(parseFloat(s)>0?parseFloat(s)*60:360)}
+const pf=s=>Math.floor(s/60)+':'+String(Math.round(s%60)).padStart(2,'0');
+function gen(g,W,L0,pos){
+ const rpw=Math.max(2,Math.min(5,Math.round(+g.rpw)||3)),goal=+g.goal||10,p=pp(g.pace),r5=x=>Math.round(x*2)/2,out=[];
+ let pk=goal<=5?6:goal<=10?11:goal<=21.2?19:goal<=30?26:32;const want=pk;
+ const nb=Math.max(1,Math.min(16,W-2)),hold=Math.max(0,W-2-nb),lim=L0*Math.pow(1.12,nb);
+ if(pk>lim)pk=Math.max(L0,lim);pk=r5(pk);
+ const T={E:p+75,L:p+75,I:p+40,T:p+30,F:p+45,S:p+90},pat={2:['E','L'],3:['E','Q','L'],4:['E','Q','E','L'],5:['E','Q','E','E','L']}[rpw];
+ const add=(km,ty,txt)=>out.push({km,note:txt+' · ± '+Math.round(km*T[ty]/60)+' min (gem. '+pf(T[ty])+'/km)'});
+ for(let w=0;w<W;w++){
+  const fin=w==W-1,t1=W>2&&w==W-2;let L;
+  if(t1)L=pk*.7;else if(fin)L=0;else if(W<3||w<hold)L=L0;else{const j=w-hold+1;L=L0+(pk-L0)*j/nb;if(j%4==0&&j<nb)L*=.8}
+  L=r5(Math.max(3,L));const e=Math.min(10,Math.max(3,r5(L*.55))),em=Math.min(6,Math.max(3,r5(pk*.3)));
+  pat.forEach((ty,i)=>{
+   if(fin){i<rpw-1?add(em,'E','Rustig'):add(3,'S','Shakeout, kort en rustig');return}
+   if(ty=='L')add(L,'L','Lange duurloop, rustig');
+   else if(ty=='E')add(e,'E','Rustige duurloop');
+   else{const q=w%3,km=Math.max(4,e);
+    if(q==0)add(km,'I','Interval: '+Math.min(10,4+Math.floor(w/2))+'× '+(goal<=5?400:800)+' m, 90 s rust (+ in- en uitlopen)');
+    else if(q==1)add(km,'T','Tempoloop: '+Math.min(35,15+w)+' min op tempo (+ in- en uitlopen)');
+    else add(km,'F','Fartlek: '+Math.min(10,6+Math.floor(w/2))+'× 1 min snel, 1 min rustig')}})}
+ const warn=[];if(pk<want)warn.push('Opbouw beperkt: je langste run komt uit op '+pk+' km (richtwaarde '+want+' km). Kies een latere datum of een kleiner doel.');if(W<6)warn.push('Korte voorbereiding.');
+ return{list:out.slice(pos||0),warn:warn.join(' ')}}
+function regen(force,init){const r=S.rp;if(!r||!r.gok||!r.auto||!r.date||!r.gen)return;
+ const t=new Date();t.setHours(12,0,0,0);const td=ds(t);if(!force&&r.gd==td)return;if(!init&&r.k>=r.list.length)return;
+ const E2=new Date(r.date+'T12:00');E2.setDate(E2.getDate()-(+r.rest||0));const days=Math.round((E2-t)/864e5);if(days<0)return;
+ const W=Math.max(1,Math.round((days+1)/7)),c=new Date(t);c.setDate(c.getDate()-21);const cs=ds(c),rc=S.log.filter(l=>l.rp&&l.d>=cs).map(l=>+(l.c&&l.c.km)||0);
+ const g=r.gen,rpw=Math.max(2,Math.min(5,Math.round(+g.rpw)||3)),res=gen(g,W,Math.max(3,rc.length?Math.max(...rc):+g.base||5),r.k%rpw);
+ r.list=r.list.slice(0,r.k).concat(res.list);r.warn=res.warn;r.gd=td;save()}
+function gset(k,v){const r=S.rp;r.gen=r.gen||{rpw:3,goal:21.1,pace:'6:00',base:5};r.gen[k]=v;save()}
+function gm(){const r=S.rp;if(!r.date){tz('Kies eerst een doeldatum.');return}
+ const go=()=>{r.gen=r.gen||{rpw:3,goal:21.1,pace:'6:00',base:5};const g=r.gen;
+  if(!r.n)r.n=+g.goal==21.1?'Halve marathon':+g.goal==42.2?'Marathon':g.goal+' km';
+  r.k=0;r.list=[];r.gok=1;r.auto=1;r.gd='';S.plan.rp=true;regen(true,1);
+  if(!r.list.length){r.list=[{km:5,note:''}];r.gok=0;tz('Doeldatum te dichtbij of al voorbij.')}save();R()};
+ if(r.list.length>1||r.k>0)cf('gen',go);else go()}
+function vG(){const r=S.rp,g=r.gen||{rpw:3,goal:21.1,pace:'6:00',base:5};
+ return `<div class=card><div class=m>Schema genereren</div><div class=row>Doel <select onchange="gset('goal',this.value)">${[5,10,15,21.1,30,42.2].map(x=>`<option value=${x} ${+g.goal==x?'selected':''}>${x==21.1?'Halve marathon':x==42.2?'Marathon':x+' km'}</option>`).join('')}</select></div><div class=row>Runs per week <input class=n type=number min=2 max=5 value=${esc(g.rpw)} onchange="gset('rpw',this.value)"></div><div class=row>Doeltempo (min/km) <input class=n style="width:72px" value="${esc(g.pace)}" placeholder="6:00" onchange="gset('pace',this.value)"></div><div class=row>Langste run nu (km) <input class=n type=number value=${esc(g.base)} onchange="gset('base',this.value)"></div><div class=row><button class=p onclick="gm()">${cl('gen','Genereer schema')}</button></div>${r.gok?`<label class=row><input type=checkbox ${r.auto?'checked':''} onchange="S.rp.auto=this.checked?1:0;if(this.checked)regen(true);save();R()"> Automatisch bijstellen</label>`:''}${r.warn?`<p class=m>${esc(r.warn)}</p>`:''}${!S.plan.cx&&S.plan.st!==false&&+g.rpw>=3?'<p class=m>Let op: met 3 of meer runs per week past krachttraining er alleen bij als je bij Schema "Cardio op rustdagen van kracht, en andersom" aanvinkt.</p>':''}<p class=m>Gebruikt de doeldatum en de laatste trainingsdag hierboven. Automatisch bijstellen herberekent de resterende runs als je dagen overslaat; handmatige wijzigingen in de lijst zetten het uit. Dit is een richtlijn, geen persoonlijk trainingsadvies. Tempo's zijn schattingen. Typ tempo als 6:30.</p></div>`}
 /* RUSTTIMER */
 function startT(){if(S.set.rest>0){T=Date.now()+S.set.rest*1000;tick()}}
 function tick(){const r=T-Date.now();$('#tb').style.width=r>0&&S.set.rest>0?(r/(S.set.rest*1000)*100)+'%':'0'}
 setInterval(tick,250);
 ['gesturestart','gesturechange','gestureend'].forEach(e=>document.addEventListener(e,ev=>ev.preventDefault()));
-load();R();
+load();regen();R();
 </script></body></html>
