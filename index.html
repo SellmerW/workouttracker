@@ -6,18 +6,18 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="apple-touch-icon" sizes="180x180" href="icon.png?v=1">
 <style>
-:root{--bg:#f6f7f7;--c:#fff;--t:#1c2124;--m:#7b858a;--a:#2f8f8a;--l:#e3e7e8}
-@media(prefers-color-scheme:dark){:root{--bg:#111415;--c:#1b1f21;--t:#eceff0;--m:#8a9499;--a:#4fb3ad;--l:#2a3033}}
+:root{--bg:#f6f7f7;--c:#fff;--t:#1c2124;--m:#7b858a;--a:#39f06f;--ao:#06140b;--wo:.16;--at:color-mix(in srgb,var(--a) 55%,#000);--l:#e3e7e8}
+@media(prefers-color-scheme:dark){:root{--bg:#111415;--c:#1b1f21;--t:#eceff0;--m:#8a9499;--at:var(--a);--l:#2a3033;--wo:.8}}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--t);font:15px -apple-system,system-ui,sans-serif;touch-action:pan-x pan-y}
-#v{max-width:480px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 8px) 14px calc(40px + env(safe-area-inset-bottom))}
+#v{max-width:480px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 8px) 14px calc(100px + env(safe-area-inset-bottom))}
 #hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;font-size:18px}
 #hd button{border:0;background:none;color:var(--m);padding:6px 8px;font-size:20px;margin:0;display:inline-flex}
 #hd button:first-child:not(:only-child){font-size:15px}
 #tb{position:fixed;left:0;bottom:0;height:3px;width:0;background:var(--a);z-index:9;pointer-events:none}
 button,select,input,textarea{font:inherit;color:var(--t)}
 button{background:var(--c);border:1px solid var(--l);border-radius:999px;padding:8px 14px;margin:2px 0}
-button.p{background:var(--a);border-color:var(--a);color:#fff}
+button.p{background:var(--a);border-color:var(--a);color:var(--ao);box-shadow:0 0 14px color-mix(in srgb,var(--a) 35%,transparent)}
 input,select,textarea{background:var(--c);border:1px solid var(--l);border-radius:12px;padding:8px 10px;min-width:0}
 input[type=checkbox]{width:auto}
 textarea{width:100%;margin-top:6px;height:44px}
@@ -28,21 +28,29 @@ textarea{width:100%;margin-top:6px;height:44px}
 .n{width:64px}
 .seg{display:flex;margin-bottom:10px;background:var(--l);padding:3px;border-radius:999px}.seg button{flex:1;border:0;background:none;margin:0;color:var(--m)}.seg button.on{background:var(--c);color:var(--t);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.15)}
 .set{display:flex;gap:6px;align-items:center;margin:6px 0}.set input{width:30%;flex:1}.set span{width:14px;color:var(--m)}
-.set i{width:54px;font-style:normal;color:var(--a);font-size:12px;font-weight:600}
+.set i{width:54px;font-style:normal;color:var(--at);font-size:12px;font-weight:600}
 .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center}
-.d small{font-size:9px;color:inherit;opacity:.85}.d{flex-direction:column;line-height:1.15;aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:400}.d.pl{border:1.5px dashed var(--a);color:var(--a)}.d.td{background:var(--l);font-weight:700}.d.on{background:var(--a);color:#fff}.d.sel{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--t)}.gr{stroke:var(--l);stroke-width:1}.ax{stroke:var(--m);stroke-width:1;opacity:.5}
+.d small{font-size:9px;color:inherit;opacity:.85}.d{flex-direction:column;line-height:1.15;aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:400}.d.pl{border:1.5px dashed var(--a);color:var(--at)}.d.td{background:var(--l);font-weight:700}.d.on{background:var(--a);color:var(--ao)}.d.sel{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--t)}.gr{stroke:var(--l);stroke-width:1}.ax{stroke:var(--m);stroke-width:1;opacity:.5}
 .bars{display:flex;gap:6px;align-items:flex-end;height:140px}.bars div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;text-align:center}
 .bars u{width:100%;background:var(--a);border-radius:4px 4px 0 0;min-height:1px}
 .bar{height:8px;background:var(--a);border-radius:4px}
 .eq{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:8px 0}
-.ln{fill:none;stroke:var(--a);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}.dt{fill:var(--a)}svg text{fill:var(--m)}.fl{display:inline-flex;align-items:center;gap:2px;color:var(--a);font-size:16px;font-weight:600;margin-right:6px}.fl.z{color:var(--m)}#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--t);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:10}</style></head><body>
-<div id="v"></div><div id="tb"></div><div id="toast"></div>
+.ln{fill:none;stroke:var(--a);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}.dt{fill:var(--a)}svg text{fill:var(--m)}.fl{display:inline-flex;align-items:center;gap:2px;color:var(--at);font-size:16px;font-weight:600;margin-right:6px}.fl.z{color:var(--m)}#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--t);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:10}#nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--c);border-top:1px solid var(--l);padding-bottom:env(safe-area-inset-bottom);z-index:5}
+#nav button{flex:1;border:0;background:none;border-radius:0;margin:0;padding:9px 0 7px;color:var(--m);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:3px}
+#nav .on{color:var(--at);font-weight:600}
+.big{font-size:30px;font-weight:700}.big2{font-size:26px;display:block;margin:6px 0}.big3{font-size:26px;font-weight:700;color:var(--t)}.big3 small{font-size:14px;margin-left:3px}
+.hero{border-color:var(--a);box-shadow:0 8px 28px color-mix(in srgb,var(--a) 22%,transparent);padding:18px;position:relative;overflow:hidden}.hero>*{position:relative}.hero>.wp{position:absolute;right:12px;top:24px;width:90px;height:90px;color:#000;opacity:var(--wo);pointer-events:none}.hero>.wp.sm{width:70px;height:70px;top:14px}.wide{width:100%;padding:14px;font-size:17px;font-weight:600}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tile{position:relative;overflow:hidden;margin:0;min-height:132px}.dl{font-size:13px;margin-top:4px;position:relative}
+.ti{width:26px;height:26px;color:var(--t);fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;display:block;margin-bottom:6px}.sp{position:absolute;right:0;bottom:0;width:55%;height:46%}
+.bars2{display:flex;gap:3px;align-items:flex-end;height:120px}.bars2 div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}.bars2 u{width:100%;max-width:14px;background:var(--a);border-radius:4px 4px 0 0}.bars2 small{font-size:9px;height:12px}
+</style></head><body>
+<div id="v"></div><div id="tb"></div><div id="toast"></div><div id="nav"></div>
 <script>
 const K='workout-v1';
 // namen uit de vorige versie (alleen voor het omzetten van oude gegevens)
 const OLD='Bankdrukken|Halter bankdrukken|Incline halterpers|Halter flyes|Push-ups|Chest press machine|Kabel flyes|Optrekken|Lat pulldown|Roeien met barbell|Halter roeien|Zittend kabel roeien|Deadlift|Face pull|Schouderpers met halters|Overhead press|Zijwaarts heffen|Reverse fly|Biceps curl|Barbell curl|Hammer curl|Triceps pushdown|Skullcrushers|Overhead triceps extension|Kniebuigen|Goblet squat|Beenpers|Leg extension|Leg curl|Lunges|Roemeense deadlift|Hip thrust|Kuitheffen|Plank|Crunch|Hanging knee raise|Cable crunch'.split('|');
 const OLDBW=['Push-ups','Optrekken','Kuitheffen','Hanging knee raise'];
-var S,V='t',sub='k',st='c',mo=0,mo2=0,ed=null,sx={},T=0;
+var S,V='t',sub='k',st='c',mo=0,mo2=0,pv='t',ed=null,sx={},T=0;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const ds=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
@@ -52,7 +60,10 @@ function norm(o){o=Object.assign({routines:[],log:[],cur:null,set:{}},o||{});o.s
  const cu=o.custom||[],nm=id=>/^e\d+$/.test(id)?(OLD[+id.slice(1)]||id):((cu.find(x=>x.id==id)||{}).nl||id),fx=e=>{if(!e.n){e.n=nm(e.id);delete e.id}};
  o.routines.forEach(r=>r.ex.forEach(fx));o.log.forEach(l=>l.ex.forEach(fx));if(o.cur)o.cur.ex.forEach(fx);
  if(!o.bwk){o.bwk={};OLDBW.forEach(n=>o.bwk[key(n)]=true)}delete o.custom;return o}
-function load(){let o;try{o=JSON.parse(localStorage.getItem(K))}catch(e){}S=norm(o)}
+function theme(){const c=/^#[0-9a-f]{6}$/i.test(S.set.ac||'')?S.set.ac:'#39f06f',n=i=>parseInt(c.slice(i,i+2),16),L=(.299*n(1)+.587*n(3)+.114*n(5))/255,s=document.documentElement.style;s.setProperty('--a',c);s.setProperty('--ao',L>.55?'#06140b':'#fff')}
+const AC=['#39f06f','#3ab7ff','#b26bff','#ff9a3c','#ff4fa3','#e6ff3a'];
+function sac(c){S.set.ac=c;save();theme();R()}
+function load(){let o;try{o=JSON.parse(localStorage.getItem(K))}catch(e){}S=norm(o);theme()}
 function save(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
 const G=()=>S.gyms[S.gym]||S.gyms[0];
 const vol=(e,s)=>((+s.kg||0)+(S.bwk[key(e.n)]?(+S.set.bw||0):0))*(+s.r||0);
@@ -63,19 +74,59 @@ function pr(n,s){const b=best(n);if(!b.k)return'';const k=+s.kg,r=+s.r;if(k>b.k)
 function names(){const m={};S.routines.forEach(r=>r.ex.forEach(e=>e.n&&(m[key(e.n)]=e.n)));S.log.forEach(l=>l.ex.forEach(e=>m[key(e.n)]=e.n));return Object.values(m)}
 const FL='<svg width=18 height=18 viewBox="0 0 24 24" fill=currentColor><path d="M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-2.5 1.2-4 2.5-5 .3 2 1 3 2 3.2C11.500 8 10.800 5 12 2z"/></svg>';
 const IC='<svg width=22 height=22 viewBox="0 0 24 24" fill=none stroke=currentColor stroke-width=2 stroke-linecap=round><path d="M5 20V11M12 20V4M19 20v-6"/></svg>';
+const rn=r=>{const n=(r.n||'').trim();return !n?'Hardlooptraining':/training$/i.test(n)?n:n+' training'};
+const TB=[['t','Home','<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>'],['s','Voortgang','<path d="M5 20V11M12 20V4M19 20v-6"/>'],['w','Training','<path d="M6 7v10M3 9v6M18 7v10M21 9v6M6 12h12"/>'],['i','Profiel','<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>']];
+function nv(v){if(['t','s','w','i'].includes(V))pv=V;V=v;R();window.scrollTo(0,0)}
 function R(){
- if(V!='i')sx.p=0;const sk=streak();
- const hd=V=='t'?`<div id=hd><b>Training</b><span><span class="fl ${sk?'':'z'}">${FL}${sk}</span><button onclick="V='s';R()" aria-label="Statistieken">${IC}</button><button onclick="V='i';R()" aria-label="Instellingen">⚙︎</button></span></div>`:`<div id=hd><button onclick="V='t';R()">‹ Terug</button><b>${{s:'Statistieken',i:'Instellingen',p:'Schema',h:'Hardloopschema',o:'Planning'}[V]}</b><span style="width:60px"></span></div>`;
- $('#v').innerHTML=hd+(V=='t'?vT():V=='s'?vS():V=='p'?vP():V=='h'?vH():V=='o'?vO():vI())+`<datalist id=dl>${names().map(n=>`<option value="${esc(n)}">`).join('')}</datalist>`;
+ if(V!='i')sx.p=0;
+ const sb=V=='p'||V=='h',hh=new Date().getHours(),gt=hh<12?'Goedemorgen':hh<18?'Goedemiddag':'Goedenavond',sk=streak();
+ const hd=V=='t'?`<div id=hd><div>${S.set.nm?`<div class=m>${gt},</div>`:''}<div class=big>${S.set.nm?esc(S.set.nm):gt}</div></div><span class="fl ${sk?'':'z'}">${FL}${sk}</span></div>`:`<div id=hd>${sb?`<button onclick="V=pv;R()">‹ Terug</button>`:''}<b class=${sb?'':'big'}>${{s:'Voortgang',w:'Training',i:'Profiel',p:'Schema',h:'Hardloopschema'}[V]}</b>${sb?'<span style="width:60px"></span>':''}</div>`;
+ $('#v').innerHTML=hd+(V=='t'?vT():V=='s'?vS():V=='w'?vW():V=='p'?vP():V=='h'?vH():vI())+`<datalist id=dl>${names().map(n=>`<option value="${esc(n)}">`).join('')}</datalist>`;
+ const act=['t','s','w','i'].includes(V)?V:pv;
+ $('#nav').innerHTML=TB.map(([k,l,d])=>`<button class="${act==k?'on':''}" onclick="ed=null;V='${k}';R();window.scrollTo(0,0)"><svg width=24 height=24 viewBox="0 0 24 24" fill=none stroke=currentColor stroke-width=2 stroke-linecap=round stroke-linejoin=round>${d}</svg>${l}</button>`).join('');
 }
+/* HOME */
+function mins(l){return l.c?(+l.c.min||0):(l.m||l.ex.reduce((a,e)=>a+e.sets.length,0)*3)}
+const lv=l=>l.ex.reduce((a,e)=>a+e.sets.reduce((b,s)=>b+vol(e,s),0),0);
+function est(r){if(r.run){const m=(r.note||'').match(/± (\d+) min/);return m?+m[1]:0}
+ if(r.t=='c'){const c=lastC(r.id);return c?+c.min||0:0}
+ const a=S.log.filter(l=>l.rid==r.id&&l.m).map(l=>l.m);return a.length?Math.round(a.reduce((x,y)=>x+y)/a.length):r.ex.reduce((x,e)=>x+e.sets,0)*3}
+const WP=(c,sm)=>`<svg class="wp${sm?' sm':''}" viewBox="0 0 100 100" aria-hidden=true>${c?'<g transform="translate(-4,-6) scale(4.4)" fill="currentColor"><path d="M2.5 16 C2.5 14.6 3.4 13.6 4.8 13.2 L8.6 12.2 C9.6 11.9 10.4 11.2 10.9 10.3 L12 7.6 C12.2 7 12.9 6.7 13.5 7 L14.3 7.5 C15 8 15.6 8.5 16.5 8.6 L19.4 6 L21.2 6.6 C21.5 8 21.5 10.5 21.5 12 V16 Z"/><rect x="2.5" y="16.6" width="19" height="2.6" rx="1.2"/></g>':'<g transform="rotate(-35 50 50)" fill="currentColor"><rect x="8" y="30" width="10" height="40" rx="3"/><rect x="20" y="22" width="12" height="56" rx="3"/><rect x="32" y="46" width="36" height="8" rx="2"/><rect x="68" y="22" width="12" height="56" rx="3"/><rect x="82" y="30" width="10" height="40" rx="3"/></g>'}</svg>`;
+function nx(){
+ if(S.cur)return `<div class="card hero">${WP(S.cur.t=='c',1)}<div class=m>Training bezig</div><b class=big2>${esc(S.cur.rt)}</b><button class="p wide" onclick="V='w';R()">Hervat</button></div>`;
+ const s=sched(2);
+ if(!s.length)return `<div class="card hero"><div class=m>Je volgende training</div><b class=big2>Nog geen schema</b><button class="p wide" onclick="${S.routines.length||S.rp?"nv('p')":"V='w';R()"}">${S.routines.length||S.rp?'Schema instellen':'Maak je eerste routine'}</button></div>`;
+ const f=s[0],r=f.r,ty=r.run?'Hardlopen':r.t=='c'?'Cardio':'Kracht',dm=est(r);
+ return `<div class="card hero">${WP(r.run||r.t=='c')}<div class=row style="margin:0"><span class=m style="flex:1">Je volgende training</span><span class=m>${wl(f.d)}</span></div><b class=big2>${esc(r.n)}</b><div class=m style="margin-bottom:12px">${ty}${dm?` · ≈ ${dm} min`:''}${r.ex&&r.ex.length?` · ${r.ex.length} oefeningen`:''}</div><button class="p wide" onclick="${r.run?'gr()':'go('+S.routines.indexOf(r)+')'}">Start training</button>${s[1]?`<div class=m style="margin-top:10px">Daarna: ${esc(s[1].r.n)} · ${wl(s[1].d)}</div>`:''}<div class=row><button onclick="V='w';R()">Andere training</button><button onclick="nv('p')">Schema</button><button onclick="V='s';st='p';R()">Planning</button></div></div>`}
+function sp(a){const n=a.length,P=a.map((v,i)=>[i*100/(n-1),36-v/Math.max(1e-9,...a)*30]),f=x=>x.toFixed(1),cl=y=>Math.min(38,Math.max(2,y));
+ let L='M'+f(P[0][0])+' '+f(P[0][1]);
+ for(let i=0;i<n-1;i++){const p0=P[i-1]||P[i],p1=P[i],p2=P[i+1],p3=P[i+2]||p2;
+  L+='C'+f(p1[0]+(p2[0]-p0[0])/6)+' '+f(cl(p1[1]+(p2[1]-p0[1])/6))+' '+f(p2[0]-(p3[0]-p1[0])/6)+' '+f(cl(p2[1]-(p3[1]-p1[1])/6))+' '+f(p2[0])+' '+f(p2[1])}
+ return `<svg class=sp viewBox="0 0 100 40" preserveAspectRatio="none"><path d="${L}L100 40L0 40Z" fill="currentColor" opacity=".15"/><path d="${L}" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>`}
+function qs(){
+ const n=new Date(),ym=x=>x.getFullYear()*12+x.getMonth(),cm=ym(n),w0=mon(n),nf=x=>x.toLocaleString('nl-NL',{maximumFractionDigits:1});
+ const M=[['Krachttraining','',l=>l.c?0:1,'var(--a)',x=>nf(x),'<path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/>'],['Cardio','km',l=>l.c?+l.c.km||0:0,'#3ab7ff',x=>nf(x),'<path d="M2.5 16 C2.5 14.6 3.4 13.6 4.8 13.2 L8.6 12.2 C9.6 11.9 10.4 11.2 10.9 10.3 L12 7.6 C12.2 7 12.9 6.7 13.5 7 L14.3 7.5 C15 8 15.6 8.5 16.5 8.6 L19.4 6 L21.2 6.6 C21.5 8 21.5 10.5 21.5 12 V16 Z"/><rect x="2.5" y="16" width="19" height="2.6" rx="1.2"/><path d="M9.6 11.2L11.4 12M10.6 9.4L12.4 10.2"/>'],['Trainingstijd','u',mins,'#b26bff',x=>nf(x/60),'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'],['Volume','kg',lv,'#ff9a3c',x=>Math.round(x).toLocaleString('nl-NL'),'<path d="M9 9V7a3 3 0 0 1 6 0v2"/><circle cx="12" cy="15" r="6"/>']];
+ return `<div class=g2>`+M.map(([lb,un,f,c,fm,ic])=>{
+  const sum=o=>S.log.reduce((a,l)=>ym(new Date(l.d+'T12:00'))==cm-o?a+f(l):a,0),cur=sum(0),pr=sum(1),wk=Array(8).fill(0);
+  S.log.forEach(l=>{const i=7-Math.round((w0-mon(new Date(l.d+'T12:00')))/6048e5);if(i>=0&&i<8)wk[i]+=f(l)});
+  const p=pr>0?Math.round((cur-pr)/pr*100):null;
+  return `<div class="card tile" style="color:${c}"><svg class=ti viewBox="0 0 24 24">${ic}</svg><div class=big3>${fm(cur)}<small>${un}</small></div><div class=m>${lb} deze maand</div>${p==null?'':`<div class=dl>${p>=0?'↑':'↓'} ${Math.abs(p)}%</div>`}${sp(wk)}</div>`}).join('')+`</div>`}
+function ac(){
+ const m=sx.ar||'m',t=new Date();t.setHours(12,0,0,0);let it=[];const day={};S.log.forEach(l=>day[l.d]=(day[l.d]||0)+mins(l));
+ if(m=='w'){for(let i=6;i>=0;i--){const d=new Date(t);d.setDate(d.getDate()-i);it.push({l:d.toLocaleDateString('nl-NL',{weekday:'narrow'}),v:day[ds(d)]||0})}}
+ else if(m=='m'){const y=t.getFullYear(),mo=t.getMonth(),n=new Date(y,mo+1,0).getDate();for(let i=1;i<=n;i++)it.push({l:(i==1||i%5==0)?i:'',v:day[ds(new Date(y,mo,i))]||0})}
+ else{const w0=mon(t);for(let i=12;i>=0;i--){const w=new Date(w0);w.setDate(w.getDate()-7*i);const k=ds(w);let v=0;S.log.forEach(l=>{if(ds(mon(new Date(l.d+'T12:00')))==k)v+=mins(l)});it.push({l:i%4==0?w.getDate()+'/'+(w.getMonth()+1):'',v})}}
+ const mx=Math.max(1,...it.map(z=>z.v));
+ return `<div class=row><b style="flex:1;font-size:18px">Activiteit</b><select onchange="sx.ar=this.value;R()">${[['w','Deze week'],['m','Deze maand'],['q','3 maanden']].map(([k,l])=>`<option value=${k} ${m==k?'selected':''}>${l}</option>`).join('')}</select></div><div class=card style="margin-top:4px"><div class=bars2>${it.map(z=>`<div><u style="height:${Math.round(z.v/mx*90)+2}px"></u><small>${z.l}</small></div>`).join('')}</div><p class=m style="margin-bottom:0">Trainingsminuten per ${m=='q'?'week':'dag'}. Bij oudere krachttrainingen zonder tijd is dit geschat.</p></div>`}
+function vT(){return nx()+`<div style="font-size:18px;font-weight:600;margin:18px 0 8px">Snel overzicht</div>`+qs()+`<div style="height:18px"></div>`+ac()}
 /* TRAINING */
-function vT(){
+function vW(){
  if(S.cur)sub=S.cur.t=='c'?'c':'k';
  const seg=`<div class=seg><button class="${sub=='k'?'on':''}" onclick="sub='k';R()">Kracht</button><button class="${sub=='c'?'on':''}" onclick="sub='c';R()">Cardio</button></div>`;
  if(ed)return seg+vE();
  if(S.cur)return seg+vC();
- if(sub=='c')return pc()+seg+rc()+S.routines.map((r,i)=>r.t!='c'?'':`<div class=card><b>${esc(r.n)}</b><div class=m>Cardio</div><div class=row><button class=p onclick="go(${i})">Start</button><button onclick="edit(${i})">Wijzig</button><button onclick="cf('r${i}',()=>{S.routines.splice(${i},1);save()})">${cl('r'+i,'Verwijder')}</button></div></div>`).join('')+cu()+`<button class=p onclick="edit(-1,'c')">Nieuwe cardio</button>`;
- return pc()+seg+S.routines.map((r,i)=>r.t=='c'?'':`<div class=card><b>${esc(r.n)}</b><div class=m>${r.ex.length} oefeningen</div><div class=row><button class=p onclick="go(${i})">Start</button><button onclick="edit(${i})">Wijzig</button><button onclick="cf('r${i}',()=>{S.routines.splice(${i},1);save()})">${cl('r'+i,'Verwijder')}</button></div></div>`).join('')+`<button class=p onclick="edit(-1)">Nieuwe routine</button>`;
+ if(sub=='c')return seg+rc()+S.routines.map((r,i)=>r.t!='c'?'':`<div class=card><b>${esc(r.n)}</b><div class=m>Cardio</div><div class=row><button class=p onclick="go(${i})">Start</button><button onclick="edit(${i})">Wijzig</button><button onclick="cf('r${i}',()=>{S.routines.splice(${i},1);save()})">${cl('r'+i,'Verwijder')}</button></div></div>`).join('')+cu()+`<button class=p onclick="edit(-1,'c')">Nieuwe cardio</button>`;
+ return seg+S.routines.map((r,i)=>r.t=='c'?'':`<div class=card><b>${esc(r.n)}</b><div class=m>${r.ex.length} oefeningen</div><div class=row><button class=p onclick="go(${i})">Start</button><button onclick="edit(${i})">Wijzig</button><button onclick="cf('r${i}',()=>{S.routines.splice(${i},1);save()})">${cl('r'+i,'Verwijder')}</button></div></div>`).join('')+`<button class=p onclick="edit(-1)">Nieuwe routine</button>`;
 }
 function vC(){
  if(S.cur.t=='c')return vK();
@@ -90,10 +141,10 @@ function vC(){
 function tbw(i){const k=key(S.cur.ex[i].n);S.bwk[k]=!S.bwk[k];save()}
 function ae(){S.cur.ex.push({n:'',note:'',sets:[{kg:'',r:'',rpe:''},{kg:'',r:'',rpe:''},{kg:'',r:'',rpe:''}]});save();R()}
 function us(i,j,f,v){const s=S.cur.ex[i].sets[j];s[f]=v;save();if(f!='rpe'&&+s.r>0)startT();const el=document.getElementById('p'+i+'_'+j);if(el)el.textContent=pr(S.cur.ex[i].n,s)}
-function go(i){const r=S.routines[i];S.cur={rt:r.n,rid:r.id,t:r.t,c:{min:'',km:'',rpe:'',note:''},ex:r.ex.map(e=>({n:e.n,note:'',sets:Array.from({length:e.sets},()=>({kg:'',r:'',rpe:''}))}))};save();R()}
+function go(i){V='w';const r=S.routines[i];S.cur={t0:Date.now(),rt:r.n,rid:r.id,t:r.t,c:{min:'',km:'',rpe:'',note:''},ex:r.ex.map(e=>({n:e.n,note:'',sets:Array.from({length:e.sets},()=>({kg:'',r:'',rpe:''}))}))};save();R()}
 function fin(){const ex=S.cur.ex.map(e=>({n:e.n,note:e.note,sets:e.sets.filter(s=>+s.r>0)})).filter(e=>e.sets.length&&e.n);
  if(!ex.length){tz('Vul minstens één set in.');return}
- const RR=rot(),ix=RR.indexOf(S.cur.rid);if(ix>=0)S.plan.i=(ix+1)%RR.length;S.log.push({d:ds(new Date()),rt:S.cur.rt,rid:S.cur.rid,ex});S.cur=null;save();R()}
+ const RR=rot(),ix=RR.indexOf(S.cur.rid);if(ix>=0)S.plan.i=(ix+1)%RR.length;const mm=S.cur.t0?Math.round((Date.now()-S.cur.t0)/6e4):0;S.log.push({d:ds(new Date()),rt:S.cur.rt,rid:S.cur.rid,m:mm>0&&mm<=240?mm:0,ex});S.cur=null;save();R()}
 function edit(i,t){ed=i<0?{i:-1,n:'',t,ex:t=='c'?[]:[{n:'',sets:3}]}:{i,n:S.routines[i].n,t:S.routines[i].t,ex:JSON.parse(JSON.stringify(S.routines[i].ex))};R()}
 function vE(){
  if(ed.t=='c')return `<input style="width:100%" placeholder="Naam cardio (bijv. Hardlopen)" value="${esc(ed.n)}" oninput="ed.n=this.value"><div class=row><button class=p onclick=sr()>Opslaan</button><button onclick="ed=null;R()">Annuleren</button></div>`;
@@ -103,7 +154,7 @@ function sr(){const ex=ed.ex.map(e=>({n:e.n.trim(),sets:e.sets})).filter(e=>e.n)
  if(!ed.n.trim()||(!ex.length&&ed.t!='c')){tz('Geef een naam en vul minstens één oefening in.');return}
  const r={n:ed.n.trim(),ex,t:ed.t,id:ed.i<0?'r'+Date.now().toString(36):S.routines[ed.i].id};if(ed.i<0)S.routines.push(r);else S.routines[ed.i]=r;ed=null;save();R()}
 /* STATISTIEKEN */
-function vS(){return `<div class=seg>${[['c','Kalender'],['v','Volume'],['x','Per oefening']].map(([k,l])=>`<button class="${st==k?'on':''}" onclick="st='${k}';R()">${l}</button>`).join('')}</div>`+(st=='c'?cal():st=='v'?wk():pe())}
+function vS(){return `<div class=seg>${[['c','Kalender'],['v','Volume'],['x','Oefening'],['p','Planning']].map(([k,l])=>`<button class="${st==k?'on':''}" onclick="st='${k}';R()">${l}</button>`).join('')}</div>`+(st=='c'?cal():st=='v'?wk():st=='p'?vO():pe())}
 function cal(){
  const d=new Date();d.setDate(1);d.setMonth(d.getMonth()+mo);
  const y=d.getFullYear(),m=d.getMonth(),n=new Date(y,m+1,0).getDate(),s=(d.getDay()+6)%7,days=new Set(S.log.map(l=>l.d)),pm={};sched(40).forEach(q=>pm[ds(q.d)]=q.r.n);
@@ -128,11 +179,11 @@ function pe(){const m={};S.log.forEach(l=>l.ex.forEach(e=>m[key(e.n)]=e.n));cons
  const r=S.log.map(l=>{const e=l.ex.find(e=>key(e.n)==k);return e&&[l.d,Math.max(0,...e.sets.map(s=>+s.kg||0)),e.sets.reduce((a,s)=>a+vol(e,s),0)]}).filter(Boolean).slice(-20);
  return `<select style="width:100%" onchange="sx.e=this.value;R()">${ks.map(i=>`<option value="${esc(i)}" ${i==k?'selected':''}>${esc(m[i])}</option>`).join('')}</select><p><b>PR:</b> ${b.k} kg &nbsp; <b>PR 1RM:</b> ${Math.round(b.e)} kg <span class=m>(geschat)</span></p><p class=m>Volume per training (kg × reps)</p>`+ln(r.map(z=>({l:fd(z[0]),v:z[2]})))+r.slice(-6).reverse().map(z=>`<div class=m>${fd(z[0])} · top ${z[1]} kg · volume ${Math.round(z[2])}</div>`).join('')}
 /* INSTELLINGEN */
-function vI(){return `<div class=card><div class=row>Rusttimer (sec) <input class=n type=number value=${S.set.rest} oninput="S.set.rest=+this.value||0;save()"></div><div class=row>Lichaamsgewicht (kg) <input class=n type=number value="${esc(S.set.bw)}" oninput="S.set.bw=this.value;save()"></div><p class=m>Wordt bij het volume opgeteld voor oefeningen waar je "+ lichaamsgewicht" aanvinkt.</p></div><div class=card><div class=row><button onclick=bk()>Kopieer back-up</button><button onclick=rs()>${sx.p?'Zeker weten?':'Plak back-up'}</button></div><textarea id=bt placeholder="Of plak hier je back-up"></textarea><p class=m id=msg></p></div>`}
+function vI(){return `<div class=card><div class=m>Accentkleur</div><div class=row>${AC.map(c=>`<button aria-label="${c}" style="background:${c};width:34px;height:34px;padding:0;border:${(S.set.ac||AC[0])==c?'3px solid var(--t)':'0'}" onclick="sac('${c}')"></button>`).join('')}<input type=color value="${esc(S.set.ac||AC[0])}" onchange="sac(this.value)" style="width:44px;height:34px;padding:2px"></div></div><div class=card><div class=row>Naam <input value="${esc(S.set.nm)}" oninput="S.set.nm=this.value;save()"></div><div class=row>Rusttimer (sec) <input class=n type=number value=${S.set.rest} oninput="S.set.rest=+this.value||0;save()"></div><div class=row>Lichaamsgewicht (kg) <input class=n type=number value="${esc(S.set.bw)}" oninput="S.set.bw=this.value;save()"></div><p class=m>Wordt bij het volume opgeteld voor oefeningen waar je "+ lichaamsgewicht" aanvinkt.</p></div><div class=card><div class=row><button onclick=bk()>Kopieer back-up</button><button onclick=rs()>${sx.p?'Zeker weten?':'Plak back-up'}</button></div><textarea id=bt placeholder="Of plak hier je back-up"></textarea><p class=m id=msg></p></div>`}
 const msg=t=>{const m=$('#msg');if(m)m.textContent=t};
 async function bk(){const t=JSON.stringify(S),b=$('#bt');b.value=t;try{await navigator.clipboard.writeText(t);msg('Gekopieerd naar klembord.')}catch(e){b.select();msg('Kopieer de tekst hierboven handmatig.')}}
 async function rs(){
- if(sx.p){S=norm(sx.p);sx.p=0;save();R();msg('Hersteld.');return}
+ if(sx.p){S=norm(sx.p);sx.p=0;save();theme();R();msg('Hersteld.');return}
  let t=$('#bt').value;if(!t.trim()){try{t=await navigator.clipboard.readText()}catch(e){}}
  try{const d=JSON.parse(t);if(!Array.isArray(d.log))throw 0;sx.p=d;R();msg('Tik nogmaals om de huidige gegevens te vervangen.')}catch(e){msg('Geen geldige back-up gevonden.')}}
 function cf(k,fn){if(sx.c==k){sx.c=0;fn()}else{sx.c=k;setTimeout(()=>{if(sx.c==k){sx.c=0;R()}},3000)}R()}
@@ -164,7 +215,7 @@ function sched(n){
   const cC=okC&&(run||cl.length>0),force=cC&&((E2&&run)||(lC?since(lC,d):i)>=2*(gc+1));
   if(!okS&&!cC)continue;
   if(cC&&(!okS||force||ld)){
-   if(run){const e=rp.list[rp.list.length-left];out.push({d,r:{n:(rp.n||'Hardlopen')+' · '+e.km+' km',run:1}});left--;lR=k;pC='run'}
+   if(run){const e=rp.list[rp.list.length-left];out.push({d,r:{n:rn(rp)+' · '+e.km+' km',run:1,note:e.note}});left--;lR=k;pC='run'}
    else{let c=cl.filter(x=>x.id!=pC);if(!c.length)c=cl;const b=c.reduce((a,x)=>x.d<a.d?x:a,c[0]);b.d=k;out.push({d,r:b.r});pC=b.id}
    lC=k}
   else{let c=sl.filter(x=>x.id!=pS);if(!c.length)c=sl;const b=c.reduce((a,x)=>x.d<a.d?x:a,c[0]);b.d=k;out.push({d,r:b.r});pS=b.id;lS=k}
@@ -172,8 +223,8 @@ function sched(n){
  return out}
 const wl=d=>{const t=ds(new Date()),x=new Date();x.setDate(x.getDate()+1);return ds(d)==t?'Vandaag':ds(d)==ds(x)?'Morgen':d.toLocaleDateString('nl-NL',{weekday:'long',day:'numeric',month:'short'})};
 function pc(){if(!S.routines.length&&!S.rp)return'';const s=sched(2);
- if(!s.length)return`<button onclick="V='p';R()">Schema instellen</button>`;
- return `<div class=card><div class=m>Volgende training</div><div class=row><b style="flex:1;font-size:17px">${esc(s[0].r.n)}</b><span>${wl(s[0].d)}</span></div>${s[1]?`<div class=m>Daarna: ${esc(s[1].r.n)} · ${wl(s[1].d)}</div>`:''}<div class=row><button class=p onclick="${s[0].r.run?'gr()':'go('+S.routines.indexOf(s[0].r)+')'}">Start</button><button onclick="V='p';R()">Schema</button><button onclick="V='o';R()">Planning</button></div></div>`}
+ if(!s.length)return`<button onclick="nv('p')">Schema instellen</button>`;
+ return `<div class=card><div class=m>Volgende training</div><div class=row><b style="flex:1;font-size:17px">${esc(s[0].r.n)}</b><span>${wl(s[0].d)}</span></div>${s[1]?`<div class=m>Daarna: ${esc(s[1].r.n)} · ${wl(s[1].d)}</div>`:''}<div class=row><button class=p onclick="${s[0].r.run?'gr()':'go('+S.routines.indexOf(s[0].r)+')'}">Start</button><button onclick="nv('p')">Schema</button><button onclick="V='s';st='p';R()">Planning</button></div></div>`}
 function vP(){const p=S.plan,fx=p.m=='fix';
  return `<div class=seg><button class="${fx?'':'on'}" onclick="pm2('dyn')">Dynamisch</button><button class="${fx?'on':''}" onclick="pm2('fix')">Vaste dagen</button></div><div class=card><div class=m>Meenemen in het schema</div><label class=row><input type=checkbox ${p.st!==false?'checked':''} onchange="S.plan.st=this.checked;save();R()"> Krachttraining</label>${S.rp?`<label class=row><input type=checkbox ${p.rp?'checked':''} onchange="S.plan.rp=this.checked;save();R()"> ${esc(S.rp.n||'Hardloopschema')}</label>${p.rp&&S.rp.date?`<div class=row>Laatste training <input class=n type=number min=0 max=14 value="${S.rp.rest||0}" oninput="S.rp.rest=Math.max(0,Math.min(14,+this.value||0));save()"> dagen voor de doeldatum</div>`:''}${p.rp&&!S.rp.date?'<p class=m>Geef het hardloopschema een doeldatum voor een eindpunt.</p>':''}`:'<p class=m>Maak op de Cardio-tab een hardloopschema om te combineren.</p>'}</div><div class=card>${fx?`<div class=m>Trainingsdagen</div><div class=row>${['Ma','Di','Wo','Do','Vr','Za','Zo'].map((x,i)=>`<button class="${p.d.includes(i)?'p':''}" onclick="pd(${i})">${x}</button>`).join('')}</div>`:''}<div class=row>Rustdagen tussen krachttrainingen <input class=n type=number min=0 max=6 value=${p.g} onchange="S.plan.g=Math.max(0,Math.min(6,+this.value||0));save();R()"></div><div class=row>Rustdagen tussen cardio <input class=n type=number min=0 max=14 value=${cgv()} onchange="cg(this.value)"></div><div class=row>Leidend bij overlap <span class=seg style="flex:1;margin:0"><button class="${p.lead=='c'?'':'on'}" onclick="S.plan.lead='s';save();R()">Kracht</button><button class="${p.lead=='c'?'on':''}" onclick="S.plan.lead='c';save();R()">Cardio</button></span></div><label class=row><input type=checkbox ${p.cx?'checked':''} onchange="S.plan.cx=this.checked;save();R()"> Cardio op rustdagen van kracht, en andersom</label><p class=m>Wil kracht én cardio dezelfde dag, dan krijgt het leidende type die dag en schuift de ander op. Uit: na elke training geldt de rust van het type dat daarna komt. Aan: cardio mag de dag na kracht (en andersom), maar nooit op dezelfde dag.</p><p class=m>${fx?'Vaste dagen gelden voor krachttraining. Rustdagen gaan voor de gekozen dagen. Sla je een dag over, dan schuift het schema door naar de eerstvolgende gekozen dag.':'Je geeft alleen je rustdagen aan. De volgende training komt na je laatste echte training, dus sla je een dag over, dan schuift alles mee.'} De routine die het langst niet is gedaan komt als eerste.</p></div><div class=card><div class=m>Routines, met hoe vaak per ronde</div>${S.routines.length?S.routines.map(r=>{const k=p.r.indexOf(r.id);return `<div class=row><label style="flex:1"><input type=checkbox ${k>=0?'checked':''} onchange="tr2('${r.id}')"> ${esc(r.n)}${r.t=='c'?' <span class=m>cardio</span>':''}</label>${k>=0?`<span class=m>×</span><input class=n type=number min=1 max=4 value=${(p.n&&p.n[r.id])||1} onchange="cn('${r.id}',this.value)">`:''}</div>`}).join(''):'<p class=m>Maak eerst een routine.</p>'}</div>`+(sched(6).length?`<div class=card><div class=m>Komende trainingen</div>${sched(6).map(s=>`<div class=row><span style="flex:1">${wl(s.d)}</span><b>${esc(s.r.n)}</b></div>`).join('')}</div>`:'')}
 function pm2(m){S.plan.m=m;save();R()}
@@ -188,12 +239,12 @@ function finC(){const c=S.cur.c,w=S.cur.rp;if(!(+c.min>0)){tz('Vul de duur in.')
  S.log.push({d:ds(new Date()),rt:S.cur.rt,rid:S.cur.rid,t:'c',c:{min:c.min,km:c.km,rpe:c.rpe,note:c.note},ex:[],rp:w?1:0});if(w&&S.rp){S.rp.k=Math.min(S.rp.k+1,S.rp.list.length);regen(true)}S.cur=null;save();R()}
 /* HARDLOOPSCHEMA */
 function rc(){const r=S.rp;
- if(!r)return`<button onclick="S.rp={n:'',date:'',iv:3,k:0,list:[{km:5,note:''}],rest:2};save();V='h';R()">Hardloopschema maken</button>`;
+ if(!r)return`<button onclick="S.rp={n:'',date:'',iv:3,k:0,list:[{km:5,note:''}],rest:2};save();nv('h')">Hardloopschema maken</button>`;
  const e=r.list[r.k];
- return `<div class=card><b>${esc(r.n||'Hardloopschema')}</b><div class=m>${r.k}/${r.list.length} gedaan${r.date?' · tot '+fd(r.date):''}${S.plan.rp?'':' · niet in schema'}</div>${e?`<div class=row>Volgende: <b>${esc(e.km)} km</b> <span class=m>${esc(e.note)}</span></div><div class=row><button class=p onclick=gr()>Start</button><button onclick="V='h';R()">Wijzig</button>${S.plan.rp?'':`<button onclick="V='p';R()">Schema</button>`}</div>`:`<div class=row><span class=m>Schema afgerond</span><button onclick="V='h';R()">Wijzig</button></div>`}</div>`}
-function gr(){const r=S.rp,e=r&&r.list[r.k];if(!e)return;S.cur={rt:(r.n||'Hardlopen')+' · '+e.km+' km',rid:'run',t:'c',rp:1,tk:e.km,tn:e.note,c:{min:'',km:'',rpe:'',note:''},ex:[]};save();R()}
+ return `<div class=card><b>${esc(r.n||'Hardloopschema')}</b><div class=m>${r.k}/${r.list.length} gedaan${r.date?' · tot '+fd(r.date):''}${S.plan.rp?'':' · niet in schema'}</div>${e?`<div class=row>Volgende: <b>${esc(e.km)} km</b> <span class=m>${esc(e.note)}</span></div><div class=row><button class=p onclick=gr()>Start</button><button onclick="nv('h')">Wijzig</button>${S.plan.rp?'':`<button onclick="nv('p')">Schema</button>`}</div>`:`<div class=row><span class=m>Schema afgerond</span><button onclick="nv('h')">Wijzig</button></div>`}</div>`}
+function gr(){const r=S.rp,e=r&&r.list[r.k];if(!e)return;V='w';S.cur={t0:Date.now(),rt:rn(r)+' · '+e.km+' km',rid:'run',t:'c',rp:1,tk:e.km,tn:e.note,c:{min:'',km:'',rpe:'',note:''},ex:[]};save();R()}
 function vH(){const r=S.rp;if(!r)return'';
- return `<div class=card><input style="width:100%" placeholder="Naam (bijv. Halve marathon)" value="${esc(r.n)}" oninput="S.rp.n=this.value;save()"><div class=row>Doeldatum <input type=date value="${esc(r.date)}" onchange="S.rp.date=this.value;save();R()"></div><p class=m>${r.date?'De runs worden gelijkmatig verdeeld tot de doeldatum, tussen je andere trainingen door. De laatste run valt op je laatste trainingsdag voor de doeldatum (instelbaar bij Schema).':'Zonder doeldatum volgen de runs je rustdagen voor cardio (bij Schema of onder Cardio).'}</p></div>${vG()}<div class=card>${r.list.map((e,i)=>`<div class=row><span class=m style="width:22px">${i<r.k?'✓':i+1}</span><input class=n type=number inputmode=decimal value="${esc(e.km)}" oninput="S.rp.auto=0;S.rp.list[${i}].km=this.value;save()"><span class=m>km</span><input placeholder="notitie, bijv. 5×1 km interval" value="${esc(e.note)}" oninput="S.rp.auto=0;S.rp.list[${i}].note=this.value;save()"><button onclick="rl(${i})">✕</button></div>`).join('')}<div class=row><button onclick="ra(1)">+ Run</button></div><div class=row><input class=n type=number id=na value=5><span class=m>runs van</span><input class=n type=number id=nk value=5><span class=m>km</span><button onclick="ra()">Voeg toe</button></div></div>`+(sched(8).length?`<div class=card><div class=m>Komende trainingen</div>${sched(8).map(s=>`<div class=row><span style="flex:1">${wl(s.d)}</span><b>${esc(s.r.n)}</b></div>`).join('')}</div>`:'')+`<button onclick="cf('rp',()=>{S.rp=null;save();V='t'})">${cl('rp','Schema verwijderen')}</button>`}
+ return `<div class=card><input style="width:100%" placeholder="Naam (bijv. Halve marathon)" value="${esc(r.n)}" oninput="S.rp.n=this.value;save()"><div class=row>Doeldatum <input type=date value="${esc(r.date)}" onchange="S.rp.date=this.value;save();R()"></div><p class=m>${r.date?'De runs worden gelijkmatig verdeeld tot de doeldatum, tussen je andere trainingen door. De laatste run valt op je laatste trainingsdag voor de doeldatum (instelbaar bij Schema).':'Zonder doeldatum volgen de runs je rustdagen voor cardio (bij Schema of onder Cardio).'}</p></div>${vG()}<div class=card>${r.list.map((e,i)=>`<div class=row><span class=m style="width:22px">${i<r.k?'✓':i+1}</span><input class=n type=number inputmode=decimal value="${esc(e.km)}" oninput="S.rp.auto=0;S.rp.list[${i}].km=this.value;save()"><span class=m>km</span><input placeholder="notitie, bijv. 5×1 km interval" value="${esc(e.note)}" oninput="S.rp.auto=0;S.rp.list[${i}].note=this.value;save()"><button onclick="rl(${i})">✕</button></div>`).join('')}<div class=row><button onclick="ra(1)">+ Run</button></div><div class=row><input class=n type=number id=na value=5><span class=m>runs van</span><input class=n type=number id=nk value=5><span class=m>km</span><button onclick="ra()">Voeg toe</button></div></div>`+(sched(8).length?`<div class=card><div class=m>Komende trainingen</div>${sched(8).map(s=>`<div class=row><span style="flex:1">${wl(s.d)}</span><b>${esc(s.r.n)}</b></div>`).join('')}</div>`:'')+`<button onclick="cf('rp',()=>{S.rp=null;save();V=pv})">${cl('rp','Schema verwijderen')}</button>`}
 function rl(i){const r=S.rp;r.auto=0;r.list.splice(i,1);if(i<r.k)r.k--;save();R()}
 function ra(one){S.rp.auto=0;const r=S.rp,n=one?1:Math.max(1,Math.min(100,+$('#na').value||1)),k=one?(r.list.length?r.list[r.list.length-1].km:5):($('#nk').value||5);for(let i=0;i<n;i++)r.list.push({km:k,note:''});save();R()}
 function cn(id,v){S.plan.n=S.plan.n||{};S.plan.n[id]=Math.max(1,Math.min(4,+v||1));save()}
@@ -211,16 +262,18 @@ function vO(){
   if(k==rd)ls+=`<div class=row><span style="flex:1">${dn}</span><b>★ Doeldatum</b></div>`}
  return `<div class=row><button onclick="mo2--;R()">‹</button><span style="flex:1;text-align:center">${d0.toLocaleDateString('nl-NL',{month:'long',year:'numeric'})}</span><button onclick="mo2++;R()">›</button></div><div class=cal>${c}</div><p class=m>K kracht · H hardlopen · C cardio · ★ doeldatum · gevuld = gedaan · streep = gepland</p>`+(ls?`<div class=card>${ls}</div>`:'<p class=m>Niets gepland in deze maand.</p>')}
 /* SCHEMA GENEREREN */
+function pt(s){s=String(s||'').trim().replace(',','.');if(!s)return 0;const a=s.split(':').map(Number);if(a.some(isNaN))return 0;return a.length==3?a[0]*3600+a[1]*60+a[2]:a.length==2?a[0]*60+a[1]:a[0]*60}
 function pp(s){s=String(s||'').replace(',','.');const m=s.match(/^(\d+):(\d{1,2})$/);return m?+m[1]*60+ +m[2]:(parseFloat(s)>0?parseFloat(s)*60:360)}
 const pf=s=>Math.floor(s/60)+':'+String(Math.round(s%60)).padStart(2,'0');
-function gen(g,W,L0,pos){
+function gen(g,W,L0,pos,off){off=off||0;
  const rpw=Math.max(2,Math.min(5,Math.round(+g.rpw)||3)),goal=+g.goal||10,p=pp(g.pace),r5=x=>Math.round(x*2)/2,out=[];
  let pk=goal<=5?6:goal<=10?11:goal<=21.2?19:goal<=30?26:32;const want=pk;
  const nb=Math.max(1,Math.min(16,W-2)),hold=Math.max(0,W-2-nb),lim=L0*Math.pow(1.12,nb);
  if(pk>lim)pk=Math.max(L0,lim);pk=r5(pk);
- const T={E:p+75,L:p+75,I:p+40,T:p+30,F:p+45,S:p+90},pat={2:['E','L'],3:['E','Q','L'],4:['E','Q','E','L'],5:['E','Q','E','E','L']}[rpw];
+ const bd=+g.bd||5,bt=pt(g.bt),pc=bt?bt*Math.pow(goal/bd,1.06)/goal:0,ref=w=>pc?Math.max(p,pc*1.02*(1-.008*(off+w))):p;let T;const pat={2:['E','L'],3:['E','Q','L'],4:['E','Q','E','L'],5:['E','Q','E','E','L']}[rpw];
  const add=(km,ty,txt)=>out.push({km,note:txt+' · ± '+Math.round(km*T[ty]/60)+' min (gem. '+pf(T[ty])+'/km)'});
  for(let w=0;w<W;w++){
+  const rf=ref(w);T={E:rf+75,L:rf+75,I:rf+40,T:rf+30,F:rf+45,S:rf+90};
   const fin=w==W-1,t1=W>2&&w==W-2;let L;
   if(t1)L=pk*.7;else if(fin)L=0;else if(W<3||w<hold)L=L0;else{const j=w-hold+1;L=L0+(pk-L0)*j/nb;if(j%4==0&&j<nb)L*=.8}
   L=r5(Math.max(3,L));const e=Math.min(10,Math.max(3,r5(L*.55))),em=Math.min(6,Math.max(3,r5(pk*.3)));
@@ -232,23 +285,23 @@ function gen(g,W,L0,pos){
     if(q==0)add(km,'I','Interval: '+Math.min(10,4+Math.floor(w/2))+'× '+(goal<=5?400:800)+' m, 90 s rust (+ in- en uitlopen)');
     else if(q==1)add(km,'T','Tempoloop: '+Math.min(35,15+w)+' min op tempo (+ in- en uitlopen)');
     else add(km,'F','Fartlek: '+Math.min(10,6+Math.floor(w/2))+'× 1 min snel, 1 min rustig')}})}
- const warn=[];if(pk<want)warn.push('Opbouw beperkt: je langste run komt uit op '+pk+' km (richtwaarde '+want+' km). Kies een latere datum of een kleiner doel.');if(W<6)warn.push('Korte voorbereiding.');
+ const warn=[];if(pk<want)warn.push('Opbouw beperkt: je langste run komt uit op '+pk+' km (richtwaarde '+want+' km). Kies een latere datum of een kleiner doel.');if(W<6)warn.push('Korte voorbereiding.');if(pc&&p<pc*.97)warn.push('Je doeltempo ligt boven je huidige niveau. De trainingstempo\'s starten op je huidige niveau en groeien geleidelijk (hooguit ongeveer 1% per week).');
  return{list:out.slice(pos||0),warn:warn.join(' ')}}
 function regen(force,init){const r=S.rp;if(!r||!r.gok||!r.auto||!r.date||!r.gen)return;
  const t=new Date();t.setHours(12,0,0,0);const td=ds(t);if(!force&&r.gd==td)return;if(!init&&r.k>=r.list.length)return;
  const E2=new Date(r.date+'T12:00');E2.setDate(E2.getDate()-(+r.rest||0));const days=Math.round((E2-t)/864e5);if(days<0)return;
  const W=Math.max(1,Math.round((days+1)/7)),c=new Date(t);c.setDate(c.getDate()-21);const cs=ds(c),rc=S.log.filter(l=>l.rp&&l.d>=cs).map(l=>+(l.c&&l.c.km)||0);
- const g=r.gen,rpw=Math.max(2,Math.min(5,Math.round(+g.rpw)||3)),res=gen(g,W,Math.max(3,rc.length?Math.max(...rc):+g.base||5),r.k%rpw);
+ const g=r.gen,rpw=Math.max(2,Math.min(5,Math.round(+g.rpw)||3)),res=gen(g,W,Math.max(3,rc.length?Math.max(...rc):+g.base||5),r.k%rpw,r.gs?Math.max(0,Math.floor((t-new Date(r.gs+'T12:00'))/6048e5)):0);
  r.list=r.list.slice(0,r.k).concat(res.list);r.warn=res.warn;r.gd=td;save()}
-function gset(k,v){const r=S.rp;r.gen=r.gen||{rpw:3,goal:21.1,pace:'6:00',base:5};r.gen[k]=v;save()}
+function gset(k,v){const r=S.rp;r.gen=r.gen||{rpw:3,goal:21.1,pace:'6:00',base:5,bd:5,bt:''};r.gen[k]=v;save()}
 function gm(){const r=S.rp;if(!r.date){tz('Kies eerst een doeldatum.');return}
- const go=()=>{r.gen=r.gen||{rpw:3,goal:21.1,pace:'6:00',base:5};const g=r.gen;
+ const go=()=>{r.gen=r.gen||{rpw:3,goal:21.1,pace:'6:00',base:5,bd:5,bt:''};const g=r.gen;
   if(!r.n)r.n=+g.goal==21.1?'Halve marathon':+g.goal==42.2?'Marathon':g.goal+' km';
-  r.k=0;r.list=[];r.gok=1;r.auto=1;r.gd='';S.plan.rp=true;regen(true,1);
+  r.k=0;r.list=[];r.gok=1;r.auto=1;r.gd='';r.gs=ds(new Date());S.plan.rp=true;regen(true,1);
   if(!r.list.length){r.list=[{km:5,note:''}];r.gok=0;tz('Doeldatum te dichtbij of al voorbij.')}save();R()};
  if(r.list.length>1||r.k>0)cf('gen',go);else go()}
-function vG(){const r=S.rp,g=r.gen||{rpw:3,goal:21.1,pace:'6:00',base:5};
- return `<div class=card><div class=m>Schema genereren</div><div class=row>Doel <select onchange="gset('goal',this.value)">${[5,10,15,21.1,30,42.2].map(x=>`<option value=${x} ${+g.goal==x?'selected':''}>${x==21.1?'Halve marathon':x==42.2?'Marathon':x+' km'}</option>`).join('')}</select></div><div class=row>Runs per week <input class=n type=number min=2 max=5 value=${esc(g.rpw)} onchange="gset('rpw',this.value)"></div><div class=row>Doeltempo (min/km) <input class=n style="width:72px" value="${esc(g.pace)}" placeholder="6:00" onchange="gset('pace',this.value)"></div><div class=row>Langste run nu (km) <input class=n type=number value=${esc(g.base)} onchange="gset('base',this.value)"></div><div class=row><button class=p onclick="gm()">${cl('gen','Genereer schema')}</button></div>${r.gok?`<label class=row><input type=checkbox ${r.auto?'checked':''} onchange="S.rp.auto=this.checked?1:0;if(this.checked)regen(true);save();R()"> Automatisch bijstellen</label>`:''}${r.warn?`<p class=m>${esc(r.warn)}</p>`:''}${!S.plan.cx&&S.plan.st!==false&&+g.rpw>=3?'<p class=m>Let op: met 3 of meer runs per week past krachttraining er alleen bij als je bij Schema "Cardio op rustdagen van kracht, en andersom" aanvinkt.</p>':''}<p class=m>Gebruikt de doeldatum en de laatste trainingsdag hierboven. Automatisch bijstellen herberekent de resterende runs als je dagen overslaat; handmatige wijzigingen in de lijst zetten het uit. Dit is een richtlijn, geen persoonlijk trainingsadvies. Tempo's zijn schattingen. Typ tempo als 6:30.</p></div>`}
+function vG(){const r=S.rp,g=r.gen||{rpw:3,goal:21.1,pace:'6:00',base:5,bd:5,bt:''};
+ return `<div class=card><div class=m>Schema genereren</div><div class=row>Doel <select onchange="gset('goal',this.value)">${[5,10,15,21.1,30,42.2].map(x=>`<option value=${x} ${+g.goal==x?'selected':''}>${x==21.1?'Halve marathon':x==42.2?'Marathon':x+' km'}</option>`).join('')}</select></div><div class=row>Runs per week <input class=n type=number min=2 max=5 value=${esc(g.rpw)} onchange="gset('rpw',this.value)"></div><div class=row>Doeltempo (min/km) <input class=n style="width:72px" value="${esc(g.pace)}" placeholder="6:00" onchange="gset('pace',this.value)"></div><div class=row>Snelste tijd <select onchange="gset('bd',this.value)">${[1,5,10,15,21.1,42.2].map(x=>`<option value=${x} ${(+g.bd||5)==x?'selected':''}>${x==21.1?'Halve marathon':x==42.2?'Marathon':x+' km'}</option>`).join('')}</select><input class=n style="width:84px" value="${esc(g.bt||'')}" placeholder="25:30" onchange="gset('bt',this.value)"></div><div class=row>Langste run nu (km) <input class=n type=number value=${esc(g.base)} onchange="gset('base',this.value)"></div><div class=row><button class=p onclick="gm()">${cl('gen','Genereer schema')}</button></div>${r.gok?`<label class=row><input type=checkbox ${r.auto?'checked':''} onchange="S.rp.auto=this.checked?1:0;if(this.checked)regen(true);save();R()"> Automatisch bijstellen</label>`:''}${r.warn?`<p class=m>${esc(r.warn)}</p>`:''}${!S.plan.cx&&S.plan.st!==false&&+g.rpw>=3?'<p class=m>Let op: met 3 of meer runs per week past krachttraining er alleen bij als je bij Schema "Cardio op rustdagen van kracht, en andersom" aanvinkt.</p>':''}<p class=m>Snelste tijd is optioneel (mm:ss of u:mm:ss). Trainingstempo's starten op dat niveau of iets daaronder, nooit erboven.</p><p class=m>Gebruikt de doeldatum en de laatste trainingsdag hierboven. Automatisch bijstellen herberekent de resterende runs als je dagen overslaat; handmatige wijzigingen in de lijst zetten het uit. Dit is een richtlijn, geen persoonlijk trainingsadvies. Tempo's zijn schattingen. Typ tempo als 6:30.</p></div>`}
 /* RUSTTIMER */
 function startT(){if(S.set.rest>0){T=Date.now()+S.set.rest*1000;tick()}}
 function tick(){const r=T-Date.now();$('#tb').style.width=r>0&&S.set.rest>0?(r/(S.set.rest*1000)*100)+'%':'0'}
