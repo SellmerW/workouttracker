@@ -270,29 +270,33 @@ function gen(g,W,L0,pos,off){off=off||0;
  let pk=goal<=5?6:goal<=10?11:goal<=21.2?19:goal<=30?26:32;const want=pk;
  const nb=Math.max(1,Math.min(16,W-2)),hold=Math.max(0,W-2-nb),lim=L0*Math.pow(1.12,nb);
  if(pk>lim)pk=Math.max(L0,lim);pk=r5(pk);
- const bd=+g.bd||5,bt=pt(g.bt),pc=bt?bt*Math.pow(goal/bd,1.06)/goal:0,ref=w=>pc?Math.max(p,pc*1.02*(1-.008*(off+w))):p;let T;const pat={2:['E','L'],3:['E','Q','L'],4:['E','Q','E','L'],5:['E','Q','E','E','L']}[rpw];
+ const bd=+g.bd||5,bt=pt(g.bt),pc=bt?bt*Math.pow(goal/bd,1.06)/goal:0,ref=w=>pc?Math.max(p,pc*1.02*(1-.008*(off+w))):p;let T;
+ const F={2:[['E',.5],['L',1]],3:[['E',.4],['Q',.55],['L',1]],4:[['E',.4],['Q',.55],['M',.7],['L',1]],5:[['E',.4],['Q',.55],['E',.4],['M',.7],['L',1]]}[rpw],cap={E:10,Q:13,M:18},ws=[];
  const add=(km,ty,txt)=>out.push({km,note:txt+' · ± '+Math.round(km*T[ty]/60)+' min (gem. '+pf(T[ty])+'/km)'});
  for(let w=0;w<W;w++){
   const rf=ref(w);T={E:rf+75,L:rf+75,I:rf+40,T:rf+30,F:rf+45,S:rf+90};
-  const fin=w==W-1,t1=W>2&&w==W-2;let L;
-  if(t1)L=pk*.7;else if(fin)L=0;else if(W<3||w<hold)L=L0;else{const j=w-hold+1;L=L0+(pk-L0)*j/nb;if(j%4==0&&j<nb)L*=.8}
-  L=r5(Math.max(3,L));const e=Math.min(10,Math.max(3,r5(L*.55))),em=Math.min(6,Math.max(3,r5(pk*.3)));
-  pat.forEach((ty,i)=>{
+  const n0=out.length,fin=w==W-1,t1=W>2&&w==W-2;let L;
+  if(t1)L=pk*.7;else if(fin)L=0;else if(W<3||w<hold)L=L0;else{const j=w-hold+1;L=L0+(pk-L0)*j/nb;if(j%4==0&&j<nb)L*=.75}
+  L=r5(Math.max(3,L));const em=Math.min(6,Math.max(3,r5(pk*.3)));
+  F.forEach(([ty,f],i)=>{
    if(fin){i<rpw-1?add(em,'E','Rustig'):add(3,'S','Shakeout, kort en rustig');return}
-   if(ty=='L')add(L,'L','Lange duurloop, rustig');
-   else if(ty=='E')add(e,'E','Rustige duurloop');
-   else{const q=w%3,km=Math.max(4,e);
-    if(q==0)add(km,'I','Interval: '+Math.min(10,4+Math.floor(w/2))+'× '+(goal<=5?400:800)+' m, 90 s rust (+ in- en uitlopen)');
-    else if(q==1)add(km,'T','Tempoloop: '+Math.min(35,15+w)+' min op tempo (+ in- en uitlopen)');
-    else add(km,'F','Fartlek: '+Math.min(10,6+Math.floor(w/2))+'× 1 min snel, 1 min rustig')}})}
- const warn=[];if(pk<want)warn.push('Opbouw beperkt: je langste run komt uit op '+pk+' km (richtwaarde '+want+' km). Kies een latere datum of een kleiner doel.');if(W<6)warn.push('Korte voorbereiding.');if(pc&&p<pc*.97)warn.push('Je doeltempo ligt boven je huidige niveau. De trainingstempo\'s starten op je huidige niveau en groeien geleidelijk (hooguit ongeveer 1% per week).');
- return{list:out.slice(pos||0),warn:warn.join(' ')}}
+   const km=r5(Math.max(3,L*f));
+   if(ty=='L'){let tx='Lange duurloop, rustig';if(goal>=10&&!t1&&w>=hold+Math.ceil(nb/2)&&(w-hold)%2==0)tx='Progressieve duurloop: laatste '+Math.max(2,Math.min(5,Math.round(km*.2)))+' km op ≈ '+pf(rf+10)+'/km';add(km,'L',tx)}
+   else if(ty=='E')add(Math.min(cap.E,km),'E','Rustige duurloop');
+   else if(ty=='M')add(Math.min(cap.M,km),'E','Rustige middellange duurloop');
+   else{const q=w%3,k2=Math.min(cap.Q,Math.max(4,km));
+    if(q==0)add(k2,'I','Interval: '+Math.min(10,4+Math.floor(w/2))+'× '+(goal<=5?400:800)+' m, 90 s rust (+ in- en uitlopen)');
+    else if(q==1)add(k2,'T','Tempoloop: '+Math.min(35,15+w)+' min op tempo (+ in- en uitlopen)');
+    else add(k2,'F','Fartlek: '+Math.min(10,6+Math.floor(w/2))+'× 1 min snel, 1 min rustig')}});
+  ws.push(out.slice(n0).reduce((a,x)=>a+x.km,0))}
+ const warn=[];if(pk<want)warn.push('Opbouw beperkt: je langste run komt uit op '+pk+' km (richtwaarde '+want+' km). Kies een latere datum of een kleiner doel.');if(W<6)warn.push('Korte voorbereiding.');if(goal>21.2&&rpw<4)warn.push('Voor een marathon zijn 4 of meer runs per week gebruikelijker.');if(pc&&p<pc*.97)warn.push('Je doeltempo ligt boven je huidige niveau. De trainingstempo\'s starten op je huidige niveau en groeien geleidelijk (hooguit ongeveer 1% per week).');
+ return{list:out.slice(pos||0),warn:warn.join(' '),info:'Piekweek ≈ '+Math.round(Math.max(...ws))+' km · langste run '+Math.max(...out.map(x=>x.km))+' km'}}
 function regen(force,init){const r=S.rp;if(!r||!r.gok||!r.auto||!r.date||!r.gen)return;
  const t=new Date();t.setHours(12,0,0,0);const td=ds(t);if(!force&&r.gd==td)return;if(!init&&r.k>=r.list.length)return;
  const E2=new Date(r.date+'T12:00');E2.setDate(E2.getDate()-(+r.rest||0));const days=Math.round((E2-t)/864e5);if(days<0)return;
  const W=Math.max(1,Math.round((days+1)/7)),c=new Date(t);c.setDate(c.getDate()-21);const cs=ds(c),rc=S.log.filter(l=>l.rp&&l.d>=cs).map(l=>+(l.c&&l.c.km)||0);
  const g=r.gen,rpw=Math.max(2,Math.min(5,Math.round(+g.rpw)||3)),res=gen(g,W,Math.max(3,rc.length?Math.max(...rc):+g.base||5),r.k%rpw,r.gs?Math.max(0,Math.floor((t-new Date(r.gs+'T12:00'))/6048e5)):0);
- r.list=r.list.slice(0,r.k).concat(res.list);r.warn=res.warn;r.gd=td;save()}
+ r.list=r.list.slice(0,r.k).concat(res.list);r.warn=res.warn;r.info=res.info;r.gd=td;save()}
 function gset(k,v){const r=S.rp;r.gen=r.gen||{rpw:3,goal:21.1,pace:'6:00',base:5,bd:5,bt:''};r.gen[k]=v;save()}
 function gm(){const r=S.rp;if(!r.date){tz('Kies eerst een doeldatum.');return}
  const go=()=>{r.gen=r.gen||{rpw:3,goal:21.1,pace:'6:00',base:5,bd:5,bt:''};const g=r.gen;
@@ -301,7 +305,7 @@ function gm(){const r=S.rp;if(!r.date){tz('Kies eerst een doeldatum.');return}
   if(!r.list.length){r.list=[{km:5,note:''}];r.gok=0;tz('Doeldatum te dichtbij of al voorbij.')}save();R()};
  if(r.list.length>1||r.k>0)cf('gen',go);else go()}
 function vG(){const r=S.rp,g=r.gen||{rpw:3,goal:21.1,pace:'6:00',base:5,bd:5,bt:''};
- return `<div class=card><div class=m>Schema genereren</div><div class=row>Doel <select onchange="gset('goal',this.value)">${[5,10,15,21.1,30,42.2].map(x=>`<option value=${x} ${+g.goal==x?'selected':''}>${x==21.1?'Halve marathon':x==42.2?'Marathon':x+' km'}</option>`).join('')}</select></div><div class=row>Runs per week <input class=n type=number min=2 max=5 value=${esc(g.rpw)} onchange="gset('rpw',this.value)"></div><div class=row>Doeltempo (min/km) <input class=n style="width:72px" value="${esc(g.pace)}" placeholder="6:00" onchange="gset('pace',this.value)"></div><div class=row>Snelste tijd <select onchange="gset('bd',this.value)">${[1,5,10,15,21.1,42.2].map(x=>`<option value=${x} ${(+g.bd||5)==x?'selected':''}>${x==21.1?'Halve marathon':x==42.2?'Marathon':x+' km'}</option>`).join('')}</select><input class=n style="width:84px" value="${esc(g.bt||'')}" placeholder="25:30" onchange="gset('bt',this.value)"></div><div class=row>Langste run nu (km) <input class=n type=number value=${esc(g.base)} onchange="gset('base',this.value)"></div><div class=row><button class=p onclick="gm()">${cl('gen','Genereer schema')}</button></div>${r.gok?`<label class=row><input type=checkbox ${r.auto?'checked':''} onchange="S.rp.auto=this.checked?1:0;if(this.checked)regen(true);save();R()"> Automatisch bijstellen</label>`:''}${r.warn?`<p class=m>${esc(r.warn)}</p>`:''}${!S.plan.cx&&S.plan.st!==false&&+g.rpw>=3?'<p class=m>Let op: met 3 of meer runs per week past krachttraining er alleen bij als je bij Schema "Cardio op rustdagen van kracht, en andersom" aanvinkt.</p>':''}<p class=m>Snelste tijd is optioneel (mm:ss of u:mm:ss). Trainingstempo's starten op dat niveau of iets daaronder, nooit erboven.</p><p class=m>Gebruikt de doeldatum en de laatste trainingsdag hierboven. Automatisch bijstellen herberekent de resterende runs als je dagen overslaat; handmatige wijzigingen in de lijst zetten het uit. Dit is een richtlijn, geen persoonlijk trainingsadvies. Tempo's zijn schattingen. Typ tempo als 6:30.</p></div>`}
+ return `<div class=card><div class=m>Schema genereren</div><div class=row>Doel <select onchange="gset('goal',this.value)">${[5,10,15,21.1,30,42.2].map(x=>`<option value=${x} ${+g.goal==x?'selected':''}>${x==21.1?'Halve marathon':x==42.2?'Marathon':x+' km'}</option>`).join('')}</select></div><div class=row>Runs per week <input class=n type=number min=2 max=5 value=${esc(g.rpw)} onchange="gset('rpw',this.value)"></div><div class=row>Doeltempo (min/km) <input class=n style="width:72px" value="${esc(g.pace)}" placeholder="6:00" onchange="gset('pace',this.value)"></div><div class=row>Snelste tijd <select onchange="gset('bd',this.value)">${[1,5,10,15,21.1,42.2].map(x=>`<option value=${x} ${(+g.bd||5)==x?'selected':''}>${x==21.1?'Halve marathon':x==42.2?'Marathon':x+' km'}</option>`).join('')}</select><input class=n style="width:84px" value="${esc(g.bt||'')}" placeholder="25:30" onchange="gset('bt',this.value)"></div><div class=row>Langste run nu (km) <input class=n type=number value=${esc(g.base)} onchange="gset('base',this.value)"></div><div class=row><button class=p onclick="gm()">${cl('gen','Genereer schema')}</button></div>${r.gok?`<label class=row><input type=checkbox ${r.auto?'checked':''} onchange="S.rp.auto=this.checked?1:0;if(this.checked)regen(true);save();R()"> Automatisch bijstellen</label>`:''}${r.info?`<p class=m>${esc(r.info)}</p>`:''}${r.warn?`<p class=m>${esc(r.warn)}</p>`:''}${!S.plan.cx&&S.plan.st!==false&&+g.rpw>=3?'<p class=m>Let op: met 3 of meer runs per week past krachttraining er alleen bij als je bij Schema "Cardio op rustdagen van kracht, en andersom" aanvinkt.</p>':''}<p class=m>Snelste tijd is optioneel (mm:ss of u:mm:ss). Trainingstempo's starten op dat niveau of iets daaronder, nooit erboven.</p><p class=m>Gebruikt de doeldatum en de laatste trainingsdag hierboven. Automatisch bijstellen herberekent de resterende runs als je dagen overslaat; handmatige wijzigingen in de lijst zetten het uit. Dit is een richtlijn, geen persoonlijk trainingsadvies. Tempo's zijn schattingen. Typ tempo als 6:30.</p></div>`}
 /* RUSTTIMER */
 function startT(){if(S.set.rest>0){T=Date.now()+S.set.rest*1000;tick()}}
 function tick(){const r=T-Date.now();$('#tb').style.width=r>0&&S.set.rest>0?(r/(S.set.rest*1000)*100)+'%':'0'}
